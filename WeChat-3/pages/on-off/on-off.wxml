@@ -1,0 +1,33 @@
+<!--pages/on-off/on-off.wxml-->
+<view class="page">
+  <cover-view class="image-cnt">
+    <cover-image class="cover-image" bindtap="tap1" src="/image/location.png" />
+  </cover-view>
+  <view class="section">
+    <view class="section__title">获取位置</view>
+  </view>
+  <view class="button-sp-area">
+  </view>
+  <view class="button-sp-area">
+  </view>
+  <view class="button-sp-area">
+  </view>
+  <view class="button-sp-area">
+  </view>
+  <view class="button-sp-area">
+  <!-- 将下面三行解注释，前两行注释后，时间才有效 -->
+    <button bindtap='on' class="weui-btn" type="primary">我要上课</button>
+    <button bindtap='off' class="weui-btn" type="primary">我走了</button>
+    <!-- <button bindtap='on' class="weui-btn" type="primary" wx:if="{{ison == 1}}">我要上课</button>
+    <button bindtap='off' class="weui-btn" type="primary" wx:elif="{{ison == 2}}">我走了</button>
+    <button bindtap='on' class="weui-btn" type="primary" wx:else disabled='disabled'>等待上课</button> -->
+  </view>
+  <!-- <view class="page-body-wrapper">
+    <canvas canvas-id="canvas" class="canvas">
+    <cover-view class="cover-view" bindtap='on'>我要上课</cover-view>
+    <cover-view>
+      <cover-view class="cover-view" bindtap="off">我走了</cover-view>
+    </cover-view>
+    </canvas>
+  </view> -->
+</view>

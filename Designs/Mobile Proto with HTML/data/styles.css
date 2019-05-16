@@ -1,0 +1,354 @@
+﻿.ax_default {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:400;
+  font-style:normal;
+  font-size:13px;
+  color:#333333;
+  text-align:center;
+  line-height:normal;
+}
+.shape {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:400;
+  font-style:normal;
+  font-size:13px;
+  color:#0066FF;
+  text-align:center;
+  line-height:normal;
+}
+.heading_1 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  font-size:32px;
+  text-align:left;
+}
+.heading_2 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  font-size:24px;
+  text-align:left;
+}
+.heading_3 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  font-size:18px;
+  text-align:left;
+}
+.heading_4 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  font-size:14px;
+  text-align:left;
+}
+.heading_5 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  text-align:left;
+}
+.heading_6 {
+  font-family:'Arial Normal', 'Arial';
+  font-weight:bold;
+  font-style:normal;
+  font-size:10px;
+  text-align:left;
+}
+.paragraph {
+  text-align:left;
+}
+.droplist {
+  color:#000000;
+  text-align:left;
+}
+.radio_button {
+  text-align:left;
+}
+.flow_shape {
+}
+.line {
+}
+.shape1 {
+}
+.ellipse {
+}
+.box_1 {
+}
+.box_2 {
+}
+.box_3 {
+}
+.image {
+}
+.label {
+  font-size:14px;
+  text-align:left;
+}
+.weui_font_medium20pt {
+  font-size:20px;
+  color:#353535;
+  text-align:left;
+}
+.weui_font_regular17pt {
+  font-size:17px;
+  color:#353535;
+  text-align:left;
+}
+.weui_font_regular18pt {
+  font-size:18px;
+  color:#353535;
+  text-align:left;
+}
+.weui_font_regular14pt {
+  font-size:14px;
+  color:#A0A0A0;
+  text-align:left;
+}
+.weui_font_regular13pt {
+  font-size:13px;
+  color:#576B95;
+  text-align:left;
+}
+.weui_font_regular11pt {
+  font-size:13px;
+  color:#B4B4B4;
+  text-align:left;
+}
+.weui_color_09bb07 {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_353535 {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_888888 {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_576b95 {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_e64340 {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_background {
+  font-size:36px;
+  color:#B2B2B2;
+}
+.weui_color_576b95_press {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_576b95_disabled {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_09bb07_press {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_09bb07_disable {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_e64340_press {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_color_e64340_disable {
+  font-size:12px;
+  color:#FFFFFF;
+}
+.weui_button_primary_normarl {
+  font-size:18px;
+  color:#FFFFFF;
+}
+.weui_button_primary_hl {
+  font-size:18px;
+  color:rgba(255, 255, 255, 0.6);
+}
+.weui_button_primary_disabled {
+  font-size:18px;
+  color:rgba(255, 255, 255, 0.298039215686275);
+}
+.weui_button_default_normarl {
+  font-size:18px;
+  color:#000000;
+}
+.weui_button_default_hl {
+  font-size:18px;
+  color:rgba(0, 0, 0, 0.6);
+}
+.weui_button_default_disabled {
+  font-size:18px;
+  color:rgba(0, 0, 0, 0.298039215686275);
+}
+.weui_button_warning_disabled {
+  font-size:18px;
+  color:rgba(255, 255, 255, 0.298039215686275);
+}
+.weui_button_warning_hl {
+  font-size:18px;
+  color:rgba(255, 255, 255, 0.6);
+}
+.weui_button_warning_normarl {
+  font-size:18px;
+  color:#FFFFFF;
+}
+.weui_button_primary_mini_hl {
+  font-size:13px;
+  color:rgba(255, 255, 255, 0.6);
+}
+.weui_button_primary_mini_normarl {
+  font-size:13px;
+  color:#FFFFFF;
+}
+.weui_button_primary_mini_disabled {
+  font-size:13px;
+  color:rgba(255, 255, 255, 0.298039215686275);
+}
+.weui_button_warning_mini_normarl {
+  font-size:13px;
+  color:#FFFFFF;
+}
+.weui_button_warning_mini_hl {
+  font-size:13px;
+  color:rgba(255, 255, 255, 0.6);
+}
+.weui_button_warning_mini_disabled {
+  font-size:13px;
+  color:rgba(255, 255, 255, 0.298039215686275);
+}
+.weui_button_default_mini_normarl {
+  font-size:13px;
+  color:#000000;
+}
+.weui_button_default_mini_hl {
+  font-size:13px;
+  color:rgba(0, 0, 0, 0.6);
+}
+.weui_button_default_mini_disabled {
+  font-size:13px;
+  color:rgba(0, 0, 0, 0.298039215686275);
+}
+.weui_button_line_medium_normarl {
+  font-size:16px;
+  color:#010101;
+}
+.weui_button_line_second_medium_normal {
+  font-size:16px;
+  color:#09BB07;
+}
+.weui_button_line_second_medium_hl {
+  font-size:16px;
+  color:rgba(51, 102, 0, 0.6);
+}
+.weui_button_line_medium_hl {
+  font-size:16px;
+  color:rgba(1, 1, 1, 0.6);
+}
+.weui_button_line_medium_disabled {
+  font-size:16px;
+  color:rgba(1, 1, 1, 0.298039215686275);
+}
+.weui_title_white_18pt {
+  font-size:18px;
+  color:#FFFFFF;
+  text-align:left;
+}
+.weui_title_black_18pt {
+  font-size:18px;
+  color:#353535;
+  text-align:left;
+}
+.weui_font_tabbar {
+  font-size:10px;
+  color:#808080;
+  text-align:center;
+}
+.weui_text_lines {
+  font-size:14px;
+  color:#FFFFFF;
+  text-align:left;
+  line-height:18px;
+}
+.weui_toast_bg {
+}
+.weui_font_popup_normal14pt {
+  font-size:14px;
+  color:#1C1C1C;
+  text-align:center;
+  line-height:18px;
+}
+.weui_font_popup_title_regular17pt {
+  font-size:17px;
+  color:#353535;
+  text-align:center;
+}
+.weui_font_popup_ok_btn {
+  font-size:17px;
+  color:#09BB07;
+  text-align:center;
+}
+.weui_font_popup_text_regular14pt {
+  font-size:14px;
+  color:#A0A0A0;
+  text-align:center;
+}
+.weui_font_popup_no_btn {
+  font-family:'苹方 Regular', '苹方';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#222222;
+  text-align:center;
+}
+.weui_font_list_regular17pt {
+  font-size:17px;
+  color:#999999;
+  text-align:left;
+}
+.weui_img {
+}
+.weui_mask {
+  font-size:36px;
+  color:#B2B2B2;
+}
+.weui_font_normal13pt {
+  font-size:13px;
+  color:#A0A0A0;
+  text-align:left;
+}
+.weui_font_label14pt {
+  font-size:14px;
+  color:#808080;
+  text-align:left;
+}
+._形状 {
+  font-family:'Microsoft New Tai Lue Bold', 'Microsoft New Tai Lue';
+  font-weight:700;
+  font-style:normal;
+  color:#FF0066;
+}
+.icon {
+}
+.label1 {
+  font-size:14px;
+  text-align:left;
+}
+.text_field {
+  color:#000000;
+  text-align:left;
+}
+.checkbox {
+  text-align:left;
+}
+.primary_button {
+  color:#FFFFFF;
+}

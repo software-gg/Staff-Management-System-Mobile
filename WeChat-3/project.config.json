@@ -1,0 +1,67 @@
+{
+	"description": "项目配置文件",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"autoAudits": false
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.6.6",
+	"appid": "wx96479372b634fc28",
+	"projectname": "%E8%80%83%E5%8B%A4",
+	"debugOptions": {
+		"hidedInDevtools": []
+	},
+	"isGameTourist": false,
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 2,
+			"list": [
+				{
+					"id": -1,
+					"name": "on-off",
+					"pathName": "pages/on-off/on-off",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "users",
+					"pathName": "pages/users/users",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "settings",
+					"pathName": "pages/settings/settings",
+					"scene": null
+				}
+			]
+		}
+	}
+}

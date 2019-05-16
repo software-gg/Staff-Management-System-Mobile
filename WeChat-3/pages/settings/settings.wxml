@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-panel weui-panel_access">
+      <view class="weui-panel__bd">
+        <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+          <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+            <image class="weui-media-box__thumb" src="{{userInfo.avatarUrl}}" />
+          </view>
+          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+            <view class="weui-media-box__title">{{userInfo.nickName}}</view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+    <view class="weui-panel">
+      <view class="weui-panel__bd">
+        <view class="weui-media-box weui-media-box_small-appmsg">
+          <view class="weui-cells weui-cells_in-small-appmsg">
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+              <view class="weui-cell__bd weui-cell_primary">
+                <view>学号：{{userid}}</view>
+              </view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+              <view class="weui-cell__bd weui-cell_primary">
+                <view>姓名：{{username}}</view>
+              </view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+              <view class="weui-cell__bd weui-cell_primary">
+                <view>班级：{{userclass}}</view>
+              </view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="button-sp-area">
+      <button bindtap='unlogin' class="weui-btn">退出登录</button>
+    </view>
+  </view>
+</view>

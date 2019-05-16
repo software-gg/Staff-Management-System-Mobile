@@ -1,0 +1,63 @@
+/* pages/on-off/on-off.wxss */
+.button-sp-area{
+    margin: 0 auto;
+    padding-top: 15px;
+    width: 60%;
+}
+.mini-btn{
+    margin-right: 5px;
+}
+
+.image-cnt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.cover-image {
+  width: 50px;
+  height: 50px;
+}
+.section{
+  text-align:center;
+  align-items: center;
+}
+.flex-wrp {
+  display: flex;
+  margin-left:200rpx;
+}
+.flex-item{
+  flex-direction: column;
+}
+.bc_green {background: green;width:100px; height: 100px;}
+.bc_red {background: red;width:100px; height: 100px;}
+
+.canvas {
+  width: 304px;
+  height: 304px;
+  background-color: #fff;
+}
+
+.cover-view {
+  margin-left: 52px;
+  margin-top: 40px;
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  background-color: #1AAD19;
+  color: #fff;
+}
+
+.page-body {
+  padding: 20rpx 0;
+}
+
+.page-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 70rpx;
+}
