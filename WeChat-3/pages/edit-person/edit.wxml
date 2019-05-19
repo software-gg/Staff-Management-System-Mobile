@@ -1,0 +1,39 @@
+<view class='edit-person-info'>
+  <view style="text-align:center"> {{title}} </view>
+
+  <view class='title'>基本资料</view>
+  <view class='basic-info'>
+    <view wx:for="{{list1}}" wx:for-item="itemx" wx:for-index="ix">
+      <view class='basic-info-item'>
+      <label>{{itemx.name}}</label>
+      <label class="ico-moon icon-rightarrow"></label>
+      <input class="basic-info-input" placeholder="请输入" value="{{itemx.value}}" bindinput="input-user-info" />
+      </view>
+    </view>
+  </view>
+
+  <view class='title'>联系方式</view>
+  <view class='basic-info'>
+    <view wx:for="{{list2}}" wx:for-item="itemx" wx:for-index="ix">
+      <view class='basic-info-item'>
+      <label>{{itemx.name}}</label>
+      <label class="ico-moon icon-rightarrow"></label>
+      <input class="basic-info-input" placeholder="请输入" value="{{itemx.value}}" bindinput="input-user-info" />
+      </view>
+    </view>
+  </view>
+
+  <view class="edit-save-info" bindtap="saveUserInfo">保存</view>
+</view>
+    <!-- <view class="button-sp-area">
+          <button type="primary"
+                  size="{{primarySize}}"
+                  loading="{{loading}}"
+                  plain="{{plain}}"
+                  disabled="{{disabled}}"
+                  bindtap='unlogin' 
+                  class="weui-btn">
+                  保存
+          </button>
+    </view>
+</view> -->

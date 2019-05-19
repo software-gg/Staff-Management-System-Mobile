@@ -1,5 +1,5 @@
 .button-sp-area{
     margin: 0 auto;
-    padding-top: 15px;
+    padding-top: 40px;
     width: 60%;
 }

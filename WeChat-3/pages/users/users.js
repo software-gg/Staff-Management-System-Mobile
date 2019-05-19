@@ -17,7 +17,9 @@ Page({
     tabs: ["上课名单", "下课名单"],
     activeIndex: 0,
     sliderOffset: 0,
-    sliderLeft: 0
+    sliderLeft: 0,
+    gg:0,
+    adderss:app.adderss
   },
   onLoad: function() {
     var that = this;

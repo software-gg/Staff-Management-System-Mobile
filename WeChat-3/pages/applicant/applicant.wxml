@@ -1,0 +1,56 @@
+<!--pages/applicant/applicant.wxml-->
+<view class='edit-applicant-info'>
+  <view style="text-align:center"> {{title}} </view>
+  <view class='title'>申请时间和类型</view>
+  <view class='apply-info'>
+
+    <view class='apply-info-item'>
+      <picker bindchange="bindTypePickerChange" value="{{typeIndex}}" range="{{type}}">
+        <view class="picker">
+        申请类型 {{type[typeIndex]}}
+        </view>
+      </picker>
+    </view>
+
+    <view class='apply-info-item'>
+      <picker mode="date" value="{{date}}" start="2016-1-23" end="2017-1-23" bindchange="bindSDateChange">  
+        <view class="picker">  
+        起始日期: {{sdate}}  
+        </view>  
+      </picker>  
+    </view>
+
+    <view class='apply-info-item'>
+      <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindSTimeChange">  
+        <view class="picker">  
+        起始时间 : {{stime}}
+        </view>  
+      </picker>  
+    </view>
+
+    <view class='apply-info-item'>
+      <picker mode="date" value="{{date}}" start="1978-01-01" end="2017-1-23" bindchange="bindEDateChange">  
+        <view class="picker">  
+        结束日期: {{edate}}  
+        </view>  
+      </picker>  
+    </view>
+
+    <view class='apply-info-item'>
+      <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindETimeChange"> 
+        <view class="picker">  
+        结束时间 : {{etime}}
+        </view>  
+      </picker>  
+    </view>
+
+  </view>
+
+  <view class='title'>申请理由</view>
+    <view class="apply-text">
+      <textarea auto-focus="true" style="height: 10em" />
+    </view>
+
+  <view class="hand-applicant" bindtap="hand-on">提交申请</view>
+</view>
+ 

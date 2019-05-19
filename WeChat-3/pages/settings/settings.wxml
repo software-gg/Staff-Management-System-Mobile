@@ -16,7 +16,21 @@
       <view class="weui-panel__bd">
         <view class="weui-media-box weui-media-box_small-appmsg">
           <view class="weui-cells weui-cells_in-small-appmsg">
-            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+            <navigator url="../edit-person/edit" class="weui-cell weui-cell_access" 
+hover-class="weui-cell_active">
+            <view class="weui-cell__bd weui-cell_primary">
+                <view>编辑个人信息</view>
+              </view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <navigator url="../edit-passwd/passwd" class="weui-cell weui-cell_access" 
+hover-class="weui-cell_active">
+            <view class="weui-cell__bd weui-cell_primary">
+                <view>修改密码</view>
+              </view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <!-- <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
               <view class="weui-cell__bd weui-cell_primary">
                 <view>学号：{{userid}}</view>
               </view>
@@ -33,7 +47,7 @@
                 <view>班级：{{userclass}}</view>
               </view>
               <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-            </navigator>
+            </navigator> -->
           </view>
         </view>
       </view>
