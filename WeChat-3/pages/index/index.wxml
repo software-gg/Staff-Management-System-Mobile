@@ -4,27 +4,36 @@
   </view>
   <!-- <view class=' pad'></view> -->
   <view class='login-item'>
-    <view class='login-item-info'>学号</view>
+    <view class='login-item-info'>工号</view>
     <view class='login-pwd'>
-      <input style="flex-grow:1" bindinput='useridInput' maxlength='15'/>
+      <input style="flex-grow:1" bindinput='useridInput' maxlength='15' value='{{fake_userid}}' />
     </view>
   </view>
   <view class="login-item">
-    <view class='login-item-info'>姓名</view>
+    <view class='login-item-info'>密码</view>
     <view>
-      <input bindinput='usernameInput' />
+      <input bindinput='usernameInput' password='true' value='{{fake_password}}'/>
     </view>
   </view>
-  <view class='item'>
-    <view class='login-item'>
-      <view class='login-item-info'>班级</view>
-      <view class='login-pwd'>
-        <input style="flex-grow:1" bindinput='userclassInput' />
-      </view>
+  <view class="login-item">
+    <view class='login-item-info'>请输入手机号</view>
+    <view>
+      <input bindinput='bindPhoneInput'/>
     </view>
-    <!-- <view class=' pad'></view> -->
-    <view class='login-item'>
-      <button open-type='getUserInfo' class='login-bin' type='primary' bindgetuserinfo='loginBtnClick'>登录</button>
+  </view>
+  <view class='row'>
+     <input placeholder='请输验证码' bindinput='bindCodeInput' style='width:70%;'/> 
+     <button class='codeBtn' bindtap='getCode' hidden='{{hidden}}' disabled='{{btnDisabled}}'>{{btnValue}}</button>
+  </view>
+  <checkbox-group bindchange="checkboxChange">
+  <label class="checkbox" wx:for="{{items}}">
+    <checkbox value="{{item.name}}" checked="{{item.checked}}" />
+    {{item.value}}
+  </label>
+  </checkbox-group>
+  <view class='item'>
+    <view class='login-bin'>
+      <button open-type='getUserInfo'  type='primary' bindgetuserinfo='loginBtnClick'>登录</button>
     </view>
   </view>
 </view>

@@ -4,7 +4,13 @@
     "pages/logs/logs",
     "pages/users/users",
     "pages/on-off/on-off",
-    "pages/settings/settings"
+    "pages/message/message",
+    "pages/apply/apply",
+    "pages/settings/settings",
+    "pages/edit-person/edit",
+    "pages/edit-passwd/passwd",
+    "pages/save-example/save",
+    "pages/applicant/applicant"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -28,19 +34,25 @@
     "list": [
       {
         "pagePath": "pages/on-off/on-off",
-        "text": "打卡",
+        "text": "我的工作",
         "iconPath": "image/打卡.png",
         "selectedIconPath": "image/打卡.png"
       },
       {
-        "pagePath": "pages/users/users",
-        "text": "查看",
+        "pagePath": "pages/message/message",
+        "text": "我的消息",
         "iconPath": "image/设置.png",
         "selectedIconPath": "image/设置.png"
       },
       {
+        "pagePath": "pages/apply/apply",
+        "text": "我的申请",
+        "iconPath": "image/申请.png",
+        "selectedIconPath": "image/申请.png"
+      },
+      {
         "pagePath": "pages/settings/settings",
-        "text": "我的",
+        "text": "设置",
         "iconPath": "image/我的.png",
         "selectedIconPath": "image/我的.png"
       }

@@ -48,6 +48,21 @@ App({
     startTime: null,
     endTime: null,
     maxDistance: null,
-    address: null
+    address: null,
+    activeIndex1:0,
+    activeIndex:1,
+    maxDistance: null,
+    address: null,
+    name: null,
+    gender: null,
+    birth: null,
+    location: null,
+    phone: null,
+    qq: null,
+    wechat: null,
+    email: null,
+    oldpasswd: null,
+    newpasswd: null,
+    cfmpasswd: null
   }
 })

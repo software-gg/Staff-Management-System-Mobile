@@ -1,0 +1,18 @@
+<view class='passwd'>
+  <view style="text-align:center"> {{title}} </view>
+  <view class='passwd-info'>
+    <view wx:for="{{list1}}" wx:for-item="itemx" wx:for-index="ix">
+      <view class='passwd-info-item'>
+      <label>{{itemx.name}}</label>
+      <label class="ico-moon icon-rightarrow"></label>
+          <input class="passwd-info-input" 
+          password type="text" 
+          bindinput=''
+          value="{{itemx.value}}"
+          placeholder="请输入" />
+      </view>
+    </view>
+   </view>
+    
+    <view class="passwd-save-info" bindtap="savePasswdAndUnlogin">修改并重新登陆</view>
+</view>

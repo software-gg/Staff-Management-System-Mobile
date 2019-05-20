@@ -1,0 +1,47 @@
+/* pages/edit-person/edit.wxss */
+.edit-person-info .basic-info {
+  padding-left: 1%;
+  padding-right: 1%;
+  margin-top: 10px;
+  list-style: none;
+  line-height: 10px;
+  text-indent: 10px; 
+  background-color: rgb(255, 255, 255);
+}
+.edit-person-info .title {
+  padding-left: 1%;
+  padding-right: 1%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  list-style: none;
+  line-height: 10px;
+  text-indent: 10px;
+  background-color: rgba(255, 255, 255, 0);
+}
+.edit-person-info .basic-info view {
+  position: relative;
+  border-bottom: 1px solid #ededed;
+}
+.basic-info-item {
+  height: 80rpx;
+  line-height: 80rpx;
+}
+.basic-info-input {
+  float: right;
+  border: none;
+  width: 70%;
+  line-height: 80rpx;
+  height: 80rpx;
+  margin-right: 25px;
+  color: #888;
+  font-size: 14px;
+}
+.edit-save-info {
+  margin: 70rpx 50rpx;
+  height:90rpx;
+  line-height:90rpx;
+  background-color: #1AAD19;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+}

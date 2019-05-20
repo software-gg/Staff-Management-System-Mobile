@@ -1,0 +1,34 @@
+.passwd .passwd-info {
+  padding-left: 1%;
+  padding-right: 1%;
+  /* border-top: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8; */
+  margin-top: 30px;
+  list-style: none;
+  line-height: 10px;
+  text-indent: 10px; 
+  background-color: rgb(255, 255, 255);
+}
+.passwd-info-item {
+  height: 117rpx;
+  line-height: 117rpx;
+}
+.passwd-info-input {
+  float: right;
+  border: none;
+  width: 70%;
+  line-height: 117rpx;
+  height: 117rpx;
+  margin-right: 25px;
+  color: #888;
+  font-size: 14px;
+}
+.passwd-save-info {
+  margin: 200rpx 50rpx;
+  height:90rpx;
+  line-height:90rpx;
+  background-color: #1AAD19;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+}

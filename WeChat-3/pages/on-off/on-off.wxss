@@ -1,4 +1,4 @@
-/* pages/on-off/on-off.wxss */
+/* pages/on-off/on-off.wxss
 .button-sp-area{
     margin: 0 auto;
     padding-top: 15px;
@@ -60,4 +60,99 @@
   align-items: center;
   width: 100%;
   margin-top: 70rpx;
+} */
+page,
+.page,
+.page__bd{
+    height: 100%;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-tab__content1{
+    padding-top: 30%;
+    text-align: center;
+    height: 100%;
+}
+.weui-tab__content2 .weui-tab__content3{
+    margin-top: -60rpx;
+    height: 100%
+}
+
+.image{
+  height: 200rpx;
+  width: 200rpx;
+}
+text{
+  font-family: 'Times New Roman', Times, serif;
+  font-size:30rpx;
+  padding-bottom: 5rpx;
+}
+.box1 .dateBox{
+  width: 88%;
+  height: 40px;
+  line-height: 50px;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 40rpx;
+}
+
+.box1{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.box1>view{
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 34rpx;
+}
+
+.dateOn{
+  border-radius: 50%;
+  background-color: hotpink;
+  color: #fff;
+}
+.hr{
+  border-bottom: 1rpx solid gray;
+  width: 80%;
+  margin: auto;
+}
+.checkbox{
+  font-size: 25rpx;
+  position: absolute;
+  right: 10%;
+  padding-top: 5rpx;
+}
+
+.time{
+  width: 100%;
+  height: 100rpx;
+  background-color:gainsboro;
+  margin-bottom: 20rpx;
+  border-top: 1rpx solid brown;
+  border-bottom: 1rpx solid brown;
+}
+.space{
+  height:60rpx;
+}
+.first{
+  padding-left: 20rpx;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size:35rpx;
+}
+.second{
+  padding-left: 20rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size:29rpx;
+  color:whitesmoke;
+}
+.overtime{
+  text-align: center;
+  color: brown;
+}
+.hover{
+  color: blue;
 }

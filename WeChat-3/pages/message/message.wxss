@@ -1,0 +1,26 @@
+/* pages/message/message.wxss */
+.space{
+  padding-top: 30rpx;
+}
+.normal{
+  width: 90%;
+  height:150rpx;
+  border: 4rpx solid brown;
+  border-radius: 20rpx;
+  margin: auto;
+  margin-top: 40rpx;
+  
+}
+.type{
+  font-size: 38rpx;
+}
+.status{
+  font-size: 28rpx;
+  color: gray;
+  margin-left: 20rpx;
+}
+.small{
+  font-size:26rpx;
+  color: red;
+  margin-left: 20rpx;
+}

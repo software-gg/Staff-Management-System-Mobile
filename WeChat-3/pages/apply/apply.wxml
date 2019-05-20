@@ -1,0 +1,118 @@
+
+<view class="page">
+    <view class="page__bd">
+        <view class="weui-tab">
+            <view class="weui-navbar">
+                <block wx:for="{{tabs}}" wx:key="*this">
+                    <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                        <view class="weui-navbar__title">{{item}}</view>
+                    </view>
+                </block>
+                <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+            </view>
+            <view class="weui-tab__panel">
+                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
+                <view wx:for="{{list}}">
+                <view wx:if="{{item.status==0}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                  <view class='cancel' bindtap='cancel1'  data-index="{{index}}" data-status="{{item.status}}"  data-num="{{item.num}}"  >取消申请</view>
+                </view>
+                </view>
+                </view>
+                <view wx:for="{{list1}}">
+                <view wx:if="{{item.status==0}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                  <view class='cancel' bindtap='cancel1' data-index="{{index}}" data-status="{{item.status}}"  data-num="{{item.num}}"  >取消申请</view>
+                </view>
+                </view>
+                </view>
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                <view wx:for="{{list}}">
+                <view wx:if="{{item.status==1}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                  <view class='cancel' bindtap='cancel2' data-index="{{index}}" data-status="{{item.status}}"  data-num="{{item.num}}"  >销假</view>
+                </view>
+                </view>
+                </view>
+                <view wx:for="{{list1}}">
+                <view wx:if="{{item.status==1}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                </view>
+                </view>
+                </view>
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+                <view wx:for="{{list}}">
+                <view wx:if="{{item.status==2}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                  <view class='cancel' data-index="{{index}}" data-status="{{item.status}}"  data-num="{{item.num}}"  bindtap='cancel3'>删除</view>
+                </view>
+                </view>
+                </view>
+                <view wx:for="{{list1}}">
+                <view wx:if="{{item.status==2}}">
+                <view class='normal'>
+                  <view class='type' >
+                  {{item.time}}{{item.name}}
+                  </view>
+                  <view class='status'>
+                  起始时间：{{item.starttime}}
+                  </view>
+                  <view class='status'>
+                  结束时间：{{item.endtime}}
+                  </view>
+                  <view class='cancel' data-index="{{index}}" data-status="{{item.status}}" data-num="{{item.num}}" bindtap='cancel3'>删除</view>
+                </view>
+                </view>
+                </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

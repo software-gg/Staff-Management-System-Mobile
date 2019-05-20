@@ -1,0 +1,36 @@
+page,
+.page,
+.page__bd{
+    height: 100%;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-tab__content{
+    padding-top: 0;
+    
+}
+.normal{
+  width: 90%;
+  height:150rpx;
+  border: 4rpx solid brown;
+  border-radius: 20rpx;
+  margin: auto;
+  margin-top: 40rpx;
+  position: relative;
+  
+}
+.type{
+  font-size: 38rpx;
+  margin-left: 20rpx;
+}
+.status{
+  font-size: 28rpx;
+  color: gray;
+  margin-left: 20rpx;
+}
+.cancel{
+  position: absolute;
+  right:5%;
+  top:40%;
+}

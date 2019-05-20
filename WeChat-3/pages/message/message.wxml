@@ -1,0 +1,41 @@
+<!--pages/message/message.wxml-->
+<view class='space'></view>
+<view class = 'normal'>
+<view class='type' bindtap='apply'>【{{list[0].name}}】{{list[0].time}}{{list[0].type}}已通过</view>
+<view class='status'>{{list[0].time}}{{list[0].type}}{{list[0].message}}</view>
+<view class='small'>{{list[0].issue}}</view>
+</view>
+<view class = 'normal'>
+<view class='type' bindtap='unpass'>【{{list[1].name}}】{{list[1].time}}{{list[1].type}}未通过</view>
+<view class='status'> {{list[1].time}}{{list[1].type}}{{list[1].message}}</view>
+<view class='small'> {{list[1].issue}}</view>
+</view>
+
+<view wx:if="{{show}}">
+<view class = 'normal'>
+<view class = 'type' bindtap='on'>【上班提醒】还有{{time1}}就要上班啦</view>
+<view class='status'> 还有{{value3}}就要上班啦，别忘了打卡哦</view>
+<view class='small'> {{issue3}}</view>
+</view>
+</view>
+<view wx:else>
+<view class = 'normal'>
+<view class='type' bindtap='on'>【下班提醒】还有{{time2}}就要下班啦，别忘了打卡哦</view>
+<view class='status'> 还有{{value4}}就要下班啦，别忘了打卡哦</view>
+<view class='small'> {{issue4}}</view>
+</view>
+</view>
+<view wx:if="{{show}}">
+<view class = 'normal'>
+<view class='type' bindtap='on'>【加班申请提醒】{{valu5a}}</view>
+<view class='status'> {{message5a}}{{time2}}</view>
+<view class='small'> {{issue5a}}</view>
+</view>
+</view>
+<view wx:else="">
+<view class = 'normal'>
+<view class='type'>【加班申请提醒】{{valu5b}}</view>
+<view class='status'> {{message5b}}</view>
+<view class='small'> {{issue5b}}</view>
+</view>
+</view>

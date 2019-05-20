@@ -6,3 +6,36 @@
 .log-item {
   margin: 10rpx;
 }
+.box1 .dateBox{
+  width: 90%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 40rpx;
+}
+
+.box1{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.box1>view{
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 34rpx;
+}
+
+.dateOn{
+  border-radius: 50%;
+  background-color: hotpink;
+  color: #fff;
+}
+.test{
+  width: 100rpx;
+  height: 100rpx;
+  background-color:red;
+  color: red;
+}
