@@ -182,6 +182,8 @@ Page({
             console.error(err);
           }
         })
+
+        // 测试：
         if (zhenzisms.client.validateCode(number, this.data.code) == 'ok') {
           wx.switchTab({
             url: '../on-off/on-off',

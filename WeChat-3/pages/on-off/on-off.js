@@ -482,6 +482,17 @@ Page({
 
 
   onLoad: function () {
+
+    wx.request({
+      url: 'http://localhost:9093/user/list',
+      success(res) {
+        console.log(res.data);
+      },
+      fail(err) {
+        console.log('err: ', err);
+      }
+    })
+
     this.dataTime();
     console.log(this.data.activeIndex1)
     //根据得到今月的最后一天日期遍历 得到所有日期
@@ -527,6 +538,9 @@ Page({
       onlyFromCamera: true,
       success(res) {
         console.log(res)
+      },
+      fail(err) {
+        console.log(err)
       }
     })
   },
