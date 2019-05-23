@@ -34,33 +34,39 @@ const models = {
         'qq': { 'type': String },                       // QQ号
         'avatar': { 'type': String },                   // 头像URL
         'departName': { 'type': String },               // 部门
-        'isRemind': { 'type': String }                  // 是否自动上下班提醒？0提醒，1不提醒
+        'isRemind': { 'type': Number }                  // 是否自动上下班提醒？0提醒，1不提醒
     },
     // 申请集合
+    // 点击取消申请时，系统会将数据库中的对应申请项删除；
+    // 点击销假时，系统会将isCancel字段置为 1
+    // 点击删除时，系统会将isDelete字段置为 1
     apply: {
-        'departName': { 'type': String },
+        'departName': { 'type': String },   // 部门名
         'userId': { 'type': String },       // 员工对象
         'sentTime': { 'type': Date },       // 申请提交时间
         'startTime': { 'type': Date },      // 申请起始时间
         'endTime': { 'type': Date },        // 申请结束时间
-        'status': { 'type': String },       // 申请性质：加班、事假、病假
+        'type': { 'type': String },       // 申请性质：加班、事假、病假
         'reason': { 'type': String },       // 申请理由
-        'state': { 'type': String }         // 申请状态：待审核wait、通过pass、未通过fail、销假
+        'state': { 'type': String },        // 申请状态：待审核wait、通过pass、未通过fail、销假
+        'isCancel': { 'type': Number },     // 是否已经销假？1销假，0未销假
+        'isDelete': { 'type': Number }      // 员工端是否被删除？1删除，0未删除
     },
     // 安排集合
     arrange: {
-        'departName': { 'type': String },
+        'departName': { 'type': String },   // 部门名
         'userId': { 'type': String },       // 员工对象
+        'location': { 'type': String },     // 打卡地点
         'onTime': { 'type': Date },         // 上班时间
         'offTime': { 'type': Date },        // 下班时间
         'type': { 'type': String },         // 安排性质：请假leave、加班extra、正常ordinary、临时加班temp
         'realOnTime': { 'type': Date },     // 实际上班时间
         'realOffTime': { 'type': Date },    // 实际下班时间
-        'isTemp': { 'type': String }        // 是否临时调整？1临时调整，0永久调整
+        'isTemp': { 'type': Number }        // 是否临时调整？1临时调整，0永久调整
     },
     // 薪酬集合
     salary: {
-        'departName': { 'type': String },
+        'departName': { 'type': String },   // 部门名
         'userId': { 'type': String },       // 员工对象
         'month': { 'type': Date },          // 年月
         'leaveDur': { 'type': Number },     // 请假时长，小时为单位
@@ -73,9 +79,10 @@ const models = {
         'userId': { 'type': String },       // 工号
         'sentTime': { 'type': Date },       // 发送时间
         // 消息类型：
-        // 员工端：上班提醒、下班提醒、申请通过、申请未通过、加班申请提醒、
-        // 部门主管端：提交了申请、调整工作安排提醒
-        'type': { 'type': String },
+        // 员工端：上班提醒on、下班提醒off、申请通过pass、申请未通过unpass、加班申请提醒extra、
+        // 部门主管端：提交了申请wait、调整工作安排提醒adjust
+        'type': { 'type': String },         // 消息类型
+        'tag': {'type': String},            // 【】中的内容
         'title': { 'type': String },        // 消息标题
         'msg': { 'type': String }           // 消息内容
     }

@@ -400,7 +400,7 @@ var app = getApp();
 Page({
   data: {
     tabs: ["考勤打卡", "工作安排", "工作情况"],
-    activeIndex1: 0,
+    activeIndex: 0,
     sliderOffset: 0,
     sliderLeft: 0,
     arr: [],
@@ -409,15 +409,15 @@ Page({
     firstDay: null,
     weekArr: ['日', '一', '二', '三', '四', '五', '六'],
     year: null,
-    height:null,
-    items: [
-      { name: 'sendor', value: '自动上下班提醒' },
-    ],
-    list:[
-      {
-        name:'正常上班',
-        value1:null,
-        value2:null,
+    height: null,
+    items: [{
+      name: 'sendor',
+      value: '自动上下班提醒'
+    }, ],
+    list: [{
+        name: '正常上班',
+        value1: null,
+        value2: null,
       },
       {
         name: '部门加班',
@@ -435,14 +435,13 @@ Page({
         value2: null,
       }
     ],
-    list2:[
-      {
-        name:'上班打卡',
-        value:'null'
+    list2: [{
+        name: '上班打卡',
+        value: 'null'
       },
       {
-        name:'下班打卡',
-        value:'null',
+        name: '下班打卡',
+        value: 'null',
       },
       {
         name: '加班开始',
@@ -454,9 +453,9 @@ Page({
       },
     ]
   },
-  
+
   //获取日历相关参数
-  dataTime: function () {
+  dataTime: function() {
     var date = new Date();
     var year = date.getFullYear();
     var month = date.getMonth();
@@ -481,28 +480,18 @@ Page({
   },
 
 
-  onLoad: function () {
+  onLoad: function() {
 
-    wx.request({
-      url: 'http://localhost:9093/user/list',
-      success(res) {
-        console.log(res.data);
-      },
-      fail(err) {
-        console.log('err: ', err);
-      }
-    })
 
     this.dataTime();
-    console.log(this.data.activeIndex1)
     //根据得到今月的最后一天日期遍历 得到所有日期
     for (var i = 1; i < this.data.lastDay + 1; i++) {
       this.data.arr.push(i);
     }
     var res = wx.getSystemInfoSync();
     this.setData({
-      sysW: res.windowHeight / 18,//更具屏幕宽度变化自动设置宽度
-      height: (res.windowHeight / 25)-5,
+      sysW: res.windowHeight / 18, //更具屏幕宽度变化自动设置宽度
+      height: (res.windowHeight / 25) - 5,
       marLet: this.data.firstDay,
       arr: this.data.arr,
       year: this.data.year,
@@ -511,7 +500,7 @@ Page({
     });
     var that = this;
     wx.getSystemInfo({
-      success: function (res) {
+      success: function(res) {
         that.setData({
           sliderLeft: (res.windowWidth / that.data.tabs.length - sliderWidth) / 2,
           sliderOffset: res.windowWidth / that.data.tabs.length * that.data.activeIndex
@@ -519,13 +508,13 @@ Page({
       }
     });
   },
-  onShow:function(){
+  onShow: function() {
     this.setData({
-      activeIndex1: app.globalData.activeIndex1,
+      activeIndex: app.globalData.activeWork,
     })
     var that = this;
     wx.getSystemInfo({
-      success: function (res) {
+      success: function(res) {
         that.setData({
           sliderLeft: (res.windowWidth / that.data.tabs.length - sliderWidth) / 2,
           sliderOffset: res.windowWidth / that.data.tabs.length * that.data.activeIndex
@@ -533,7 +522,7 @@ Page({
       }
     });
   },
-  on_but:function(){
+  on_but: function() {
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
@@ -546,12 +535,48 @@ Page({
   },
   checkboxChange(e) {
     console.log('checkbox发生change事件，携带value值为：', e.detail.value)
+    const url = app.globalData.proxy + '/remind';
+    const val = e.detail.value[0];
+    const isRemind = (val === 'sendor');
+
+    wx.request({
+      url,
+      method: 'POST',
+      data: {
+        userId: wx.getStorageSync('user').userId,
+        isRemind
+      },
+      success(res) {
+        if (res.statusCode === 200) {
+          if (res.data.code === 1) {
+            wx.showToast({
+              title: res.data.msg,
+              icon: 'none'
+            })
+          } else {
+            wx.showToast({
+              title: '设置成功',
+            })
+            const user = wx.getStorageSync('user');
+            wx.setStorageSync('user', {
+              ...user,
+              isRemind
+            })
+          }
+        } else {
+          wx.showToast({
+            title: '出错啦',
+            icon: 'none'
+          })
+        }
+      }
+    })
   },
-  tabClick: function (e) {
+  tabClick: function(e) {
+    app.globalData.activeWork = e.currentTarget.id;
     this.setData({
       sliderOffset: e.currentTarget.offsetLeft,
-      activeIndex1: e.currentTarget.id
+      activeIndex: e.currentTarget.id
     });
   }
 });
-

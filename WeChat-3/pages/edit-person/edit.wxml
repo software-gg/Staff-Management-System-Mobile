@@ -3,11 +3,11 @@
 
   <view class='title'>基本资料</view>
   <view class='basic-info'>
-    <view wx:for="{{list1}}" wx:for-item="itemx" wx:for-index="ix">
+    <view wx:for="{{list1}}" wx:key="{{index}}" wx:for-item="itemx" wx:for-index="ix">
       <view class='basic-info-item'>
-      <label>{{itemx.name}}</label>
-      <label class="ico-moon icon-rightarrow"></label>
-      <input class="basic-info-input" placeholder="请输入" value="{{itemx.value}}" bindinput="input-user-info" />
+        <label>{{itemx.name}}</label>
+        <label class="ico-moon icon-rightarrow"></label>
+        <input class="basic-info-input" placeholder="请输入" value='{{user[itemx.key]}}' data-key='{{itemx.key}}' bindinput="inputUserInfo" />
       </view>
     </view>
   </view>
@@ -16,16 +16,16 @@
   <view class='basic-info'>
     <view wx:for="{{list2}}" wx:for-item="itemx" wx:for-index="ix">
       <view class='basic-info-item'>
-      <label>{{itemx.name}}</label>
-      <label class="ico-moon icon-rightarrow"></label>
-      <input class="basic-info-input" placeholder="请输入" value="{{itemx.value}}" bindinput="input-user-info" />
+        <label>{{itemx.name}}</label>
+        <label class="ico-moon icon-rightarrow"></label>
+        <input class="basic-info-input" placeholder="请输入" data-key='{{itemx.key}}' value='{{user[itemx.key]}}' bindinput="inputUserInfo" />
       </view>
     </view>
   </view>
 
   <view class="edit-save-info" bindtap="saveUserInfo">保存</view>
 </view>
-    <!-- <view class="button-sp-area">
+<!-- <view class="button-sp-area">
           <button type="primary"
                   size="{{primarySize}}"
                   loading="{{loading}}"

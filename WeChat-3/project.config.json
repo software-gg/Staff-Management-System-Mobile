@@ -49,7 +49,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 5,
+			"current": 7,
 			"list": [
 				{
 					"id": -1,
@@ -90,6 +90,20 @@
 					"id": -1,
 					"name": "applicant",
 					"pathName": "pages/applicant/applicant",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "edit-person",
+					"pathName": "pages/edit-person/edit",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "message",
+					"pathName": "pages/message/message",
 					"scene": null
 				}
 			]

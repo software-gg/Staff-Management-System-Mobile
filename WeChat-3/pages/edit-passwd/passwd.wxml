@@ -1,14 +1,15 @@
 <view class='passwd'>
   <view style="text-align:center"> {{title}} </view>
   <view class='passwd-info'>
-    <view wx:for="{{list1}}" wx:for-item="itemx" wx:for-index="ix">
+    <view wx:for="{{list1}}" wx:key="{{index}}" wx:for-item="itemx" wx:for-index="ix">
       <view class='passwd-info-item'>
       <label>{{itemx.name}}</label>
       <label class="ico-moon icon-rightarrow"></label>
           <input class="passwd-info-input" 
           password type="text" 
-          bindinput=''
-          value="{{itemx.value}}"
+          bindinput='inputPwd'
+          data-key="{{itemx.key}}"
+          value="{{pwd[itemx.key]}}"
           placeholder="请输入" />
       </view>
     </view>

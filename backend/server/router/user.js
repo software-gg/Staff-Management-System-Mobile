@@ -6,6 +6,9 @@ const model = require('../model');
 const User = model.getModel('user');
 const utils = require('utility');
 
+// 数据库中的pwd和_v不显示在doc
+const _filter = { pwd: 0, _v: 0 };
+
 // MD5加密密码
 function md5pwd(pwd) {
     const salt = "ew98fhewfi@#~!@dfDSdsf";
@@ -32,17 +35,24 @@ Router.post('/login', function (req, res) {
     // req.body：解析post的属性（需要用到body-parser插件
     // req.params：解析在前端通过get传输到后端的参数
     const { phone, userId, pwd } = req.body;
+
+    console.log(req.body)
+
     User.findOne({
         phone,
         userId,
         pwd/*: md5pwd(pwd)*/
-    }, function (err, doc) {
+    }, _filter, function (err, doc) {
         if (err) {
             return res.json({ code: 1, msg: err });
         }
         if (!doc) {
+            console.log(doc)
             return res.json({ code: 1, msg: '登录信息或密码有误' });
         }
+
+        // 将cookie写入响应体
+        res.cookie('userid', doc._id);
         return res.json({ code: 0, user: doc });
     })
 })
@@ -50,13 +60,18 @@ Router.post('/login', function (req, res) {
 // 员工编辑个人信息
 Router.post('/changeInfo', function (req, res) {
     // const { phone, id, name } = req.query;    // user
-    const { phone, userId } = req.body.user;    // user
+    const user = req.body;
+    const { userId } = req.body;    // user
+    
+    // console.log(user);
     User.updateOne({
-        phone,
         userId
-    }, { $set: user }, function (err, doc) {
+    }, { $set: { ...user } }, function (err, doc) {
         if (err) {
             return res.json({ code: 1, msg: err })
+        }
+        if (!doc) {
+            return res.json({ code: 1, msg: '个人信息更新失败' })
         }
         return res.json({ code: 0, user: doc })
     })
@@ -64,17 +79,17 @@ Router.post('/changeInfo', function (req, res) {
 
 // 员工修改密码
 Router.post('/changePwd', function (req, res) {
-    const { phone, userId, pwd } = req.body;
+    const { userId, pwd, newPwd } = req.body;
     User.updateOne({
-        phone,
-        userId
-    }, { $set: { pwd: md5pwd(pwd) } }, function (err, doc) {
+        userId,
+        pwd/*: md5pwd(pwd)*/
+    }, { $set: { pwd: newPwd/*: md5pwd(newPwd)*/ } }, function (err, doc) {
         if (err) {
             return res.json({ code: 1, msg: err })
         }
-        // if (doc.nModified === 0) {
-        //     return res.json({ code: 1, msg: '新密码与原密码相同' });
-        // }
+        if (doc.nModified === 0) {
+            return res.json({ code: 1, msg: '密码修改失败' });
+        }
         return res.json({ code: 0 })
     })
 })

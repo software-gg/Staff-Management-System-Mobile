@@ -6,40 +6,48 @@ Page({
    * 页面的初始数据
    */
   data: {
-    list1:[
-      {
-        name:'姓名',
-        value: app.globalData.name
+    user: {},
+    list1: [{
+        key: 'name',
+        name: '姓名',
+        // value: wx.getStorageSync('user').name
       },
       {
-        name:'性别',
-        value: app.globalData.gender
+        key: 'gender',
+        name: '性别',
+        // value: wx.getStorageSync('user').gender
       },
       {
-        name:'生日',
-        value: app.globalData.birth
+        key: 'birthday',
+        name: '生日',
+        // value: wx.getStorageSync('user').birthday
       },
       {
-        name:'所在地',
-        value: app.globalData.location
+        key: 'address',
+        name: '所在地',
+        // value: wx.getStorageSync('user').address
       }
     ],
-    list2: [
-      {
+    list2: [{
+        key: 'phone',
         name: '手机号码',
-        value: app.globalData.phone
+        // value: wx.getStorageSync('user').phone
       },
       {
+        key: 'qq',
         name: '工作QQ',
-        value: app.globalData.qq
+        // value: wx.getStorageSync('user').qq
       },
       {
+        key: 'wechat',
         name: '工作微信',
-        value: app.globalData.wechat
+        // value: wx.getStorageSync('user').wechat
+
       },
       {
+        key: 'email',
         name: '工作邮箱',
-        value: app.globalData.email
+        // value: wx.getStorageSync('user').email
       }
     ]
   },
@@ -47,63 +55,105 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    this.setData({
-      name: wx.getStorageSync('app.globalData.name'),
-      gender: wx.getStorageSync('app.globalData.gender'),
-      birth: wx.getStorageSync('app.globalData.birth'),
-      location: wx.getStorageSync('app.globalData.location')
-    });
+  onLoad: function(options) {
+    // this.setData({
+    //   name: wx.getStorageSync('app.globalData.name'),
+    //   gender: wx.getStorageSync('app.globalData.gender'),
+    //   birth: wx.getStorageSync('app.globalData.birth'),
+    //   location: wx.getStorageSync('app.globalData.location')
+    // });
   },
-  saveUserInfo:function(options){
-    
+  saveUserInfo: function() {
+    const self = this;
+    wx.showLoading({
+      title: 'loading...',
+    })
+    wx.request({
+      url: app.globalData.proxy + '/user/changeInfo',
+      data: self.data.user,
+      method: 'POST',
+      success(res) {
+        if (res.data.code == 1) {
+          wx.showToast({
+            title: res.data.msg,
+            icon: 'none'
+          })
+        } else {
+          wx.setStorageSync('user', self.data.user);
+          wx.showToast({
+            title: '修改成功！',
+            icon: 'success'
+          })
+        }
+      },
+      complete(res) {
+        wx.hideLoading();
+      }
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-    
+  onReady: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-    
+  onShow: function() {
+    this.setData({
+      user: wx.getStorageSync('user')
+    })
+    // console.log(this.data.user)
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
-    
+  onHide: function() {
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
-    
+  onUnload: function() {
+
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-    
+  onPullDownRefresh: function() {
+
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-    
+  onReachBottom: function() {
+
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-    
+  onShareAppMessage: function() {
+
+  },
+
+  inputUserInfo: function(e) {
+    const self = this;
+    const key = e.target.dataset.key;
+    const val = e.detail.value;
+    // console.log(e)
+    self.setData({
+      user: {
+        ...self.data.user,
+        [key]: val
+      }
+    })
+    console.log(self.data.user)
   }
 })
