@@ -25,12 +25,12 @@ Page({
   },
 
   unlogin: function() {
-    wx.clearStorage();
     wx.showModal({
       title: '退出登录',
       content: '确定退出嘛',
       success(res) {
         if (res.confirm) {
+          wx.clearStorage();
           wx.redirectTo({
             url: '../index/index',
           });

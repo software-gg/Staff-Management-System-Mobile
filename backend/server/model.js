@@ -12,10 +12,8 @@ const models = {
     // 部门集合
     department: {
         'departName': { 'type': String, 'require': true },      // 部门名称
-        'workStatus': { 'type': String },                       // 工作状态
+        // 'workStatus': { 'type': String },                       // 工作状态
         'director': { 'type': String },                         // 部门主管工号，防止department和user无限大
-        'allArrange': { 'type': Array },                        // 整体班次安排数组，以月份为单位，每个数组元素是一个arrange
-        'isTemp': { 'type': String },                           // 是否临时调整? 1临时调整，0永久调整
     },
     // 用户集合
     user: {
@@ -52,7 +50,27 @@ const models = {
         'isCancel': { 'type': Number },     // 是否已经销假？1销假，0未销假
         'isDelete': { 'type': Number }      // 员工端是否被删除？1删除，0未删除
     },
-    // 安排集合
+    // 整体班次安排集合
+    allArrange: {
+        'departName': { 'type': String, 'require': true },  // 部门名称
+        // 上一个月所遵循的年月。
+        // 如果为临时调整，则当前月的previousId的值为上一个月的previousId；
+        // 永久调整时将当前月的_id赋值给当前月的previousId
+        'previousId': { 'type': Number },
+        'isTemp': { 'type': Number },                       // 是否永久调整
+        'month': { 'type': Date },                          // 当前年月
+        'type': { 'type': String },                         // 当前月的工作方式
+        'arrange': { 'type': Array }
+        // arrange数组元素结构：
+        /*
+        {
+            onTime: onTime,
+            offTime: offTime,
+            users: [一堆userId]
+        }
+        */
+    },
+    // 细致班次安排集合
     arrange: {
         'departName': { 'type': String },   // 部门名
         'userId': { 'type': String },       // 员工对象
@@ -60,6 +78,7 @@ const models = {
         'onTime': { 'type': Date },         // 上班时间
         'offTime': { 'type': Date },        // 下班时间
         'type': { 'type': String },         // 安排性质：请假leave、加班extra、正常ordinary、临时加班temp
+        'state': { 'type': String },        // 打卡状态：正常off、迟到late、早退early、可申请加班extra
         'realOnTime': { 'type': Date },     // 实际上班时间
         'realOffTime': { 'type': Date },    // 实际下班时间
         'isTemp': { 'type': Number }        // 是否临时调整？1临时调整，0永久调整
@@ -82,7 +101,7 @@ const models = {
         // 员工端：上班提醒on、下班提醒off、申请通过pass、申请未通过unpass、加班申请提醒extra、
         // 部门主管端：提交了申请wait、调整工作安排提醒adjust
         'type': { 'type': String },         // 消息类型
-        'tag': {'type': String},            // 【】中的内容
+        'tag': { 'type': String },          // 【】中的内容
         'title': { 'type': String },        // 消息标题
         'msg': { 'type': String }           // 消息内容
     }

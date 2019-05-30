@@ -3,7 +3,7 @@ const Router = express.Router();
 const model = require('../model');
 const Message = model.getModel('message');
 
-// 获取消息列表
+// 员工、部门主管、经理获取消息列表
 Router.post('/list', function (req, res) {
     const { userId } = req.body;
     Message.find({

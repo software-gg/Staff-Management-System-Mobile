@@ -1,3 +1,5 @@
+// 细致工作班次安排
+
 const express = require('express');
 const Router = express.Router();
 const model = require('../model');
@@ -17,6 +19,47 @@ Router.post('/list/user', function (req, res) {
             return res.json({ code: 1, msg: err });
         }
         return res.json({ code: 0, list: doc })
+    })
+})
+
+// 部门主管和经理调整某个员工某个月的工作安排
+Router.post('/update', function (req, res) {
+    const { arrange } = req.body;
+    const { _id, onTime, offTime, isTemp, type, state } = arrange;
+
+    Arrange.updateOne({ _id }, {
+        $set: {
+            onTime,
+            offTime,
+            isTemp,
+            type,
+            state
+        }
+    }, function (err, doc) {
+        if (err) {
+            return res.json({ code: 1, msg: '后端出错了' });
+        }
+
+        if (doc.nModified === 0)
+            return res.json({ code: 1, msg: '更新失败' });
+
+        return res.json({ code: 0 });
+    })
+})
+
+// 部门主管和经理添加细致班次安排
+Router.post('/insert', function (req, res) {
+    const { arrange } = req.body;
+
+    Arrange.insertOne(arrange, function (err, doc) {
+        if (err) {
+            return res.json({ code: 1, msg: '后端出错了' });
+        }
+
+        if (doc.nModified === 0)
+            return res.json({ code: 1, msg: '添加失败' });
+
+        return res.json({ code: 0 });
     })
 })
 

@@ -225,7 +225,11 @@ Page({
             }
           },
           fail(err) {
-            console.log(err);
+            console.log(err)
+            wx.showToast({
+              title: '登录失败',
+              icon: 'none'
+            })
           },
           complete(res) {
             wx.hideLoading();

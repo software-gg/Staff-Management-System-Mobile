@@ -15,14 +15,29 @@ function md5pwd(pwd) {
     return utils.md5(utils.md5(salt + pwd));
 }
 
-// 用户获取单个用户信息
-Router.post('/info/user', function (req, res) {
-    const { userId } = req.body;
-    User.find({
-        userId
-    }, function (err, doc) {
+/*****************
+ * 接口变了！！！改一下微信小程序中的接口！！！
+ * *****************/
+// 员工、部门主管、经理获取单个用户信息
+Router.post('/list', function (req, res) {
+    const body = req.body;
+    let condition = {};
+
+
+    if (body.userId) {
+        // 员工的查询条件
+        condition.userId = body.userId;
+    } else if (body.departName) {
+        // 部门主管的查询条件
+        condition.departName = body.departName;
+    } else {
+        // 经理的查询条件为空
+        ;
+    }
+
+    User.find(condition, function (err, doc) {
         if (err) {
-            return res.json({ code: 1, msg: err });
+            return res.json({ code: 1, msg: '后端出错了' });
         }
 
         return res.json({ code: 0, user: doc });
@@ -62,7 +77,7 @@ Router.post('/changeInfo', function (req, res) {
     // const { phone, id, name } = req.query;    // user
     const user = req.body;
     const { userId } = req.body;    // user
-    
+
     // console.log(user);
     User.updateOne({
         userId
@@ -70,7 +85,7 @@ Router.post('/changeInfo', function (req, res) {
         if (err) {
             return res.json({ code: 1, msg: err })
         }
-        if (!doc) {
+        if (doc.nModified === 0) {
             return res.json({ code: 1, msg: '个人信息更新失败' })
         }
         return res.json({ code: 0, user: doc })
@@ -94,32 +109,34 @@ Router.post('/changePwd', function (req, res) {
     })
 })
 
-// 部门主管获取用户列表
-Router.post('/info/director', function (req, res) {
-    const { departName } = req.body;
-    User.find({
-        departName
-    }, function (err, doc) {
+// 部门主管和经理插入多个员工
+Router.post('/insert', function (req, res) {
+    const { users } = req.body;
+    User.insertMany(users, function (err, doc) {
         if (err) {
-            return res.json({ code: 1, msg: err });
+            return res.json({ code: 1, msg: '后端出错了' });
         }
 
-        return res.json({ code: 0, user: doc });
+        return res.json({ code: 0 });
     })
 })
 
-// 经理获取用户列表
-Router.post('/info/manager', function (req, res) {
-    User.find({
+// 删除所有与该员工相关的数据
+function deleteAllUser(userId) {
 
-    }, function (err, doc) {
+    return true;
+}
+
+// 部门主管和经理删除一个员工
+Router.post('/delete', function (req, res) {
+    const { userId } = req.body;
+    User.deleteOne({ userId }, function (err, doc) {
         if (err) {
-            return res.json({ code: 1, msg: err });
+            return res.json({ code: 1, msg: '后端出错了' });
         }
-        if (doc) {
-            return res.json({ code: 0, user: doc });
-        }
-        return res.json({ code: 1, msg: '后端出错了' });
+
+        if (deleteAllUser(userId))
+            return res.json({ code: 0 });
     })
 })
 

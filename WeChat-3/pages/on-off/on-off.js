@@ -508,7 +508,61 @@ Page({
       }
     });
   },
+
+  handleSwipe: function() {
+    wx.showLoading({
+      title: 'loading...',
+    })
+    const url = app.globalData.proxy + '/attend/swipe';
+    const userId = wx.getStorageSync('user').userId;
+    console.log(userId);
+    const time = new Date();
+
+    wx.request({
+      url,
+      method: 'POST',
+      data: {
+        userId,
+        time
+      },
+      success(res) {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          let word;
+          switch (res.data.state) {
+            case 'on': word = '上班成功'; break;
+            case 'off': word = '下班成功'; break;
+            case 'extra': word = '可以申请加班'; break;
+            case 'early': word = '早退'; break;
+          }
+          wx.showToast({
+            title: word,
+            icon: 'success',
+            duration: 1000
+          })
+          console.log(res.data.state)
+        } else {
+          wx.showToast({
+            title: res.data.msg,
+            icon: 'none',
+            duration: 1000
+          })
+        }
+      },
+      fail(err) {
+        wx.showToast({
+          title: err,
+          icon: 'none',
+          duration: 1000
+        })
+      },
+      complete(res) {
+        wx.hideLoading();
+      }
+    })
+  },
+
   onShow: function() {
+
     this.setData({
       activeIndex: app.globalData.activeWork,
     })
@@ -523,10 +577,13 @@ Page({
     });
   },
   on_but: function() {
+    let self = this;
+
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
         console.log(res)
+        self.handleSwipe();
       },
       fail(err) {
         console.log(err)
@@ -551,11 +608,14 @@ Page({
           if (res.data.code === 1) {
             wx.showToast({
               title: res.data.msg,
-              icon: 'none'
+              icon: 'none',
+              duration: 1000
             })
           } else {
             wx.showToast({
               title: '设置成功',
+              icon: 'none',
+              duration: 1000
             })
             const user = wx.getStorageSync('user');
             wx.setStorageSync('user', {
@@ -566,10 +626,18 @@ Page({
         } else {
           wx.showToast({
             title: '出错啦',
-            icon: 'none'
+            icon: 'none',
+            duration: 1000
           })
         }
-      }
+      },
+      fail(err) {
+        wx.showToast({
+          title: '设置失败',
+          icon: 'none',
+          duration: 1000
+        })
+      },
     })
   },
   tabClick: function(e) {

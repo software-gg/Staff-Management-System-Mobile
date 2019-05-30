@@ -98,19 +98,21 @@ Page({
       type,
       reason,
       state: 'wait',
-      isCancel: '0',
-      isDelete: '0'
+      isCancel: 0,
+      isDelete: 0
     };
 
     if (type === -1 || !startTime || !endTime || !reason) {
       wx.showToast({
         title: '以上均为必填项',
-        icon: 'none'
+        icon: 'none',
+        duration: 1000
       })
     } else if (startTime >= endTime) {
       wx.showToast({
         title: '时间填写有误',
-        icon: 'none'
+        icon: 'none',
+        duration: 1000
       })
     } else {
       wx.showLoading({
@@ -123,6 +125,8 @@ Page({
         success(res) {
           wx.showToast({
             title: '申请成功',
+            icon: 'success',
+            duration: 1000
           })
           wx.switchTab({
             url: '../apply/apply'
@@ -131,7 +135,8 @@ Page({
         fail(err) {
           wx.showToast({
             title: '申请失败',
-            icon: 'none'
+            icon: 'none',
+            duration: 1000
           })
         },
         complete(res) {

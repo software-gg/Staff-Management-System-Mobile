@@ -35,10 +35,11 @@
       </view>
       <view class="weui-tab__panel">
         <view class="weui-tab__content1" hidden="{{activeIndex != 0}}">
-          <view>
-            <text>点我扫码
+          <view class="swipe-button">
+            <button type='primary' bindtap='on_but'>点我扫码</button>
+            <!-- <text>点我扫码
                     </text>
-            <image src='../../image/下载.jpg' class='image' bindtap='on_but'></image>
+            <image src='../../image/下载.jpg' class='image' bindtap='on_but'></image> -->
           </view>
         </view>
         <view class="weui-tab__content2" hidden="{{activeIndex != 1}}">

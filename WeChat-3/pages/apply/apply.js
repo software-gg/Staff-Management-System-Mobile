@@ -197,7 +197,11 @@ Page({
         that.setListData(res.data.list)
       },
       fail(err) {
-        console.log(err);
+        wx.showToast({
+          title: '获取申请列表失败',
+          icon: 'none',
+          duration: 1000
+        })
       },
       complete(res) {
         wx.hideLoading();
@@ -226,7 +230,8 @@ Page({
             method: 'POST',
             data: {
               _id,
-              isDelete: true
+              key: 'isDelete',
+              val: true
             },
             success(res) {
               if (res.data.code === 1) {
@@ -240,7 +245,14 @@ Page({
                 // })
                 self.onShow();
               }
-            }
+            },
+            fail(err) {
+              wx.showToast({
+                title: '删除失败',
+                icon: 'none',
+                duration: 1000
+              })
+            },
           })
         }
       }
@@ -266,7 +278,8 @@ Page({
                 if (res.data.code === 1) {
                   wx.showToast({
                     title: res.data.msg,
-                    icon: 'none'
+                    icon: 'none',
+                    duration: 1000
                   })
                 } else {
                   self.onShow();
@@ -277,10 +290,18 @@ Page({
               } else {
                 wx.showToast({
                   title: '出错啦',
-                  icon: 'none'
+                  icon: 'none',
+                  duration: 1000
                 })
               }
-            }
+            },
+            fail(err) {
+              wx.showToast({
+                title: '取消失败',
+                icon: 'none',
+                duration: 1000
+              })
+            },
           })
         }
       }
@@ -300,20 +321,29 @@ Page({
             method: 'POST',
             data: {
               _id,
-              isCancel: true
+              key: 'isCancel',
+              val: true
             },
             success(res) {
               if (res.statusCode === 200) {
                 if (res.data.code === 1) {
                   wx.showToast({
                     title: res.data.msg,
-                    icon: 'none'
+                    icon: 'none',
+                    duration: 1000
                   })
                 } else {
                   self.onShow();
                 }
               }
-            }
+            },
+            fail(err) {
+              wx.showToast({
+                title: '销假失败',
+                icon: 'none',
+                duration: 1000
+              })
+            },
           })
         }
       }

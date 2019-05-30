@@ -32,6 +32,7 @@ Router.post('/list', function (req, res) {
 // Router.get('/swipe', function (req, res) {
 Router.post('/swipe', function (req, res) {
     const { userId, time } = req.body;
+    console.log(userId, time);
     // const { userId, time } = req.query;
     // 上班打卡时间：上班时间前1小时到下班时间
     // 下班打卡时间：下班时间到下班后一个小时
@@ -69,38 +70,50 @@ Router.post('/swipe', function (req, res) {
         }
 
         if (docForFind) {
+
             // 如果当前正处于上班时间
             if (!docForFind.realOnTime && docForFind.onTime <= afterTime && docForFind.offTime > currentTime) {
-                Arrange.updateOne(docForFind, {
-                    $set: {
-                        realOnTime: new Date(time)
-                    }
-                }, function (err, docForUpdate) {
-                    if (err) {
-                        return res.json({ code: 1, msg: err });
-                    }
-                    return res.json({ code: 0, state: 'on' });
-                })
+                Arrange.updateOne({
+                    _id: docForFind._id
+                }, {
+                        $set: {
+                            realOnTime: new Date(time)
+                        }
+                    }, function (err, docForUpdate) {
+                        if (err) {
+                            return res.json({ code: 1, msg: err });
+                        }
+                        return res.json({ code: 0, state: 'on' });
+                    })
             } else if (!docForFind.realOffTime) {
                 // 如果当前处于下班时间
                 if (!docForFind.realOnTime) {
                     return res.json({ code: 1, msg: '上班时间未打卡' });
                 }
 
-                Arrange.updateOne(docForFind, {
+                let state;
+
+                if (docForFind.offTime > beforeTime) {
+                    if (docForFind.offTime <= currentTime)
+                        // 正常下班
+                        state = 'off';
+                    else
+                        // 早退
+                        state = 'early';
+                } else {
+                    // 提醒员工申请加班
+                    state = 'extra';
+                }
+
+                Arrange.updateOne({ _id: docForFind._id }, {
                     $set: {
-                        realOffTime: new Date(time)
+                        realOffTime: new Date(time),
+                        state
                     }
                 }, function (err, docForUpdate) {
+                    // console.log(docForFind.offTime, currentTime, docForFind.offTime > beforeTime)
                     if (err) {
                         return res.json({ code: 1, msg: err });
-                    }
-                    if (docForFind.offTime <= currentTime && docForFind.offTime > beforeTime) {
-                        // 正常下班
-                        return res.json({ code: 0, state: 'off' });
-                    } else {
-                        // 提醒员工申请加班
-                        return res.json({ code: 0, state: 'extra' });
                     }
                 })
             } else {

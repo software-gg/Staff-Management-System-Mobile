@@ -112,7 +112,11 @@ Page({
         })
       },
       fail(err) {
-        console.log(err);
+        wx.showToast({
+          title: '获取消息列表失败',
+          icon: 'none',
+          duration: 1000
+        })
       },
       complete(res) {
         wx.hideLoading();

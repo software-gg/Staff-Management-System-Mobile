@@ -36,12 +36,14 @@ Page({
     if (!self.data.pwd || !self.data.pwd.originPwd || !self.data.pwd.newPwd || !self.data.pwd.confirmPwd) {
       wx.showToast({
         title: '以上均为必填项',
-        icon: 'none'
+        icon: 'none',
+        duration: 1000
       })
     } else if (self.data.pwd.newPwd !== self.data.pwd.confirmPwd) {
       wx.showToast({
         title: '两个密码不同',
-        icon: 'none'
+        icon: 'none',
+        duration: 1000
       })
     } else {
       // console.log(this.data.pwd)
@@ -60,7 +62,8 @@ Page({
           if (res.data.code === 1)
             wx.showToast({
               title: res.data.msg,
-              icon: 'none'
+              icon: 'none',
+              duration: 1000
             })
           else {
             // wx.setStorageSync('userid', self.data.userid);
@@ -68,7 +71,8 @@ Page({
             // console.log(res.data.user)
             wx.showToast({
               title: '密码修改成功!',
-              icon: 'success'
+              icon: 'success',
+              duration: 1000
             })
             wx.clearStorage();
             wx.redirectTo({
@@ -77,7 +81,11 @@ Page({
           }
         },
         fail(err) {
-          console.log(err);
+          wx.showToast({
+            title: '修改失败',
+            icon: 'none',
+            duration: 1000
+          })
         },
         complete(res) {
           wx.hideLoading();

@@ -76,15 +76,24 @@ Page({
         if (res.data.code == 1) {
           wx.showToast({
             title: res.data.msg,
-            icon: 'none'
+            icon: 'none',
+            duration: 1000
           })
         } else {
           wx.setStorageSync('user', self.data.user);
           wx.showToast({
             title: '修改成功！',
-            icon: 'success'
+            icon: 'success',
+            duration: 1000
           })
         }
+      },
+      fail(err) {
+        wx.showToast({
+          title: '修改失败',
+          icon: 'none',
+          duration: 1000
+        })
       },
       complete(res) {
         wx.hideLoading();
