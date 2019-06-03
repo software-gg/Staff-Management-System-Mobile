@@ -73,7 +73,7 @@ Page({
       data: self.data.user,
       method: 'POST',
       success(res) {
-        if (res.data.code == 1) {
+        if (res.data.code !== 0) {
           wx.showToast({
             title: res.data.msg,
             icon: 'none',

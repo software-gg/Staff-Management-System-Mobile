@@ -1,7 +1,6 @@
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const User = model.getModel('user');
+const User = require('../dao/dao').selectModel('user');
 
 // 设置自动提醒
 Router.post('/', function (req, res) {
@@ -11,17 +10,13 @@ Router.post('/', function (req, res) {
         return res.json({ code: 1, msg: '设置失败' })
     }
 
-    User.updateOne({
-        userId
-    }, { $set: { isRemind } }, function (err, doc) {
-        console.log(doc)
-        if (err) {
-            return res.json({ code: 1, msg: err })
-        }
-        if (doc.nModified === 0) {
-            return res.json({ code: 1, msg: '设置失败' })
-        }
-        return res.json({ code: 0 })
+    const condition = { userId };
+    const settings = { isRemind };
+
+    User.updateDoc(condition, settings).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 

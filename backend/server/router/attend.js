@@ -1,7 +1,6 @@
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const Arrange = model.getModel('arrange');
+const Arrange = require('../dao/dao').selectModel('arrange');
 
 // 还未处理 通过下班时间确定发送加班申请 这个功能
 
@@ -9,7 +8,7 @@ const Arrange = model.getModel('arrange');
 Router.post('/list', function (req, res) {
     const { userId, startDate, endDate } = req.body;
     // 前端需要根据realOnTime和realOffTime是否为undefined或者null来判断上班、下班的打卡时间
-    Arrange.find({
+    const condition = {
         $or: [{
             userId,
             realOnTime: { $gte: new Date(startDate), $lt: new Date(endDate) }
@@ -17,14 +16,12 @@ Router.post('/list', function (req, res) {
             userId,
             realOffTime: { $gte: new Date(startDate), $lt: new Date(endDate) }
         }]
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
-        if (doc) {
-            return res.json({ code: 0, list: doc });
-        }
-        return res.json({ code: 1, msg: '后端出错了' });
+    }
+
+    Arrange.queryDocs(condition).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -49,9 +46,7 @@ Router.post('/swipe', function (req, res) {
     const extraTime = new Date(timeStamp - 2 * delay);
 
     // return res.json(afterTime)
-
-    // 考勤打卡逻辑
-    Arrange.findOne({
+    let condition = {
         $or: [
             {
                 userId,
@@ -64,65 +59,67 @@ Router.post('/swipe', function (req, res) {
                 offTime: { $lte: currentTime, $gt: extraTime }
             }
         ]
-    }, function (err, docForFind) {
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
+    }
 
-        if (docForFind) {
+    Arrange.queryDocs(condition).then(queryResult => {
+        if (queryResult.code === 1)
+            return res.json(queryResult);
+        if (queryResult.code === 2)
+            return res.json({ code: 2, msg: '现在是休息时间~' });
 
-            // 如果当前正处于上班时间
-            if (!docForFind.realOnTime && docForFind.onTime <= afterTime && docForFind.offTime > currentTime) {
-                Arrange.updateOne({
-                    _id: docForFind._id
-                }, {
-                        $set: {
-                            realOnTime: new Date(time)
-                        }
-                    }, function (err, docForUpdate) {
-                        if (err) {
-                            return res.json({ code: 1, msg: err });
-                        }
-                        return res.json({ code: 0, state: 'on' });
-                    })
-            } else if (!docForFind.realOffTime) {
-                // 如果当前处于下班时间
-                if (!docForFind.realOnTime) {
-                    return res.json({ code: 1, msg: '上班时间未打卡' });
-                }
+        let docForFind = queryResult.list[0];
+        let updateCondition, settings;
 
-                let state;
+        // 如果当前正处于上班时间
+        if (!docForFind.realOnTime && docForFind.onTime <= afterTime && docForFind.offTime > currentTime) {
+            updateCondition = { _id: docForFind._id };
+            settings = {
+                realOnTime: new Date(time)
+            };
+            Arrange.updateDoc(updateCondition, settings).then(updateResult => {
+                if (updateResult.code !== 0)
+                    return res.json(updateResult);
+                return res.json({ code: 0, state: 'on' });
+            }).catch(err => {
+                return res.send(err);
+            })
 
-                if (docForFind.offTime > beforeTime) {
-                    if (docForFind.offTime <= currentTime)
-                        // 正常下班
-                        state = 'off';
-                    else
-                        // 早退
-                        state = 'early';
-                } else {
-                    // 提醒员工申请加班
-                    state = 'extra';
-                }
-
-                Arrange.updateOne({ _id: docForFind._id }, {
-                    $set: {
-                        realOffTime: new Date(time),
-                        state
-                    }
-                }, function (err, docForUpdate) {
-                    // console.log(docForFind.offTime, currentTime, docForFind.offTime > beforeTime)
-                    if (err) {
-                        return res.json({ code: 1, msg: err });
-                    }
-                })
-            } else {
-                return res.json({ code: 1, msg: '重复刷卡' });
+        } else if (!docForFind.realOffTime) {
+            // 如果当前处于下班时间
+            if (!docForFind.realOnTime) {
+                return res.json({ code: 1, msg: '上班时间未打卡' });
             }
+
+            let state;
+
+            if (docForFind.offTime > beforeTime) {
+                if (docForFind.offTime <= currentTime)
+                    // 正常下班
+                    state = 'off';
+                else
+                    // 早退
+                    state = 'early';
+            } else {
+                // 提醒员工申请加班
+                state = 'extra';
+            }
+
+            updateCondition = { _id: docForFind._id };
+            settings = {
+                realOffTime: new Date(time),
+                state
+            };
+
+            Arrange.updateDoc(updateCondition, settings).then(queryResult => {
+                return res.json(queryResult);
+            }).catch(err => {
+                return res.send(err);
+            })
         } else {
-            return res.json({ code: 1, msg: '现在是休息时间~' });
+            return res.json({ code: 1, msg: '重复刷卡' });
         }
+    }).catch(err => {
+        return res.send(err);
     })
 })
-
 module.exports = Router;

@@ -12,7 +12,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 // 文件上传和下载模块
 const multer = require('multer');
-const xlsx = require('node-xlsx');
 
 // const publicRouter = require('./router/public');
 const userRouter = require('./router/user');
@@ -54,6 +53,17 @@ const fs = require('fs');
 // httpsServer.listen(SSLPORT, function () {
 //     console.log('Node app start at port 9094');
 // })
+// app.js
+
+// 允许跨域访问
+app.all('*', function(req, res, next) {  
+    res.header("Access-Control-Allow-Origin", "*");  
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");  
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");  
+    res.header("X-Powered-By",' 3.2.1')  
+    res.header("Content-Type", "application/json;charset=utf-8");  
+    next();  
+});
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -83,3 +93,8 @@ app.use('/msg', msgRouter);
 app.listen(9093, function () {
     console.log('Node app start at port 9093');
 })
+
+// Test
+// const excelUtils = require('./utils/excel');
+// const excelImports = excelUtils.excelImports;
+// excelImports();

@@ -579,6 +579,21 @@ Page({
   on_but: function() {
     let self = this;
 
+    // wx.downloadFile({
+    //   url: app.globalData.proxy + '/user/export/1',
+    //   success(res) {
+    //     if (res.statusCode === 200) {
+    //       console.log(res.tempFilePath);
+    //       console.log(res.filePath);
+    //     } else {
+    //       console.log(res);
+    //     }
+    //   },
+    //   fail(res) {
+    //     console.error(res);
+    //   }
+    // })
+
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
@@ -605,7 +620,7 @@ Page({
       },
       success(res) {
         if (res.statusCode === 200) {
-          if (res.data.code === 1) {
+          if (res.data.code !== 0) {
             wx.showToast({
               title: res.data.msg,
               icon: 'none',

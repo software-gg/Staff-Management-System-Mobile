@@ -204,15 +204,16 @@ Page({
             pwd: self.data.password
           },
           success(res) {
-            if (res.data.code === 1)
+            if (res.data.code !== 0)
               wx.showToast({
                 title: res.data.msg,
                 icon: 'none'
               })
             else {
               // wx.setStorageSync('userid', self.data.userid);
-              wx.setStorageSync('user', res.data.user);
-              console.log(res.data.user)
+              console.log(res.data);
+              wx.setStorageSync('user', res.data.list);
+              console.log(res.data.list)
               wx.showToast({
                 title: '登录成功',
                 icon: 'success'

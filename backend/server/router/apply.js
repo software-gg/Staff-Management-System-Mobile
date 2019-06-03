@@ -1,7 +1,7 @@
 const express = require('express');
 const Router = express.Router();
 const model = require('../model');
-const Apply = model.getModel('apply');
+const Apply = require('../dao/dao').selectModel('apply');
 
 const subPath = ['wait', 'pass', 'fail', 'all', 'list'];
 
@@ -28,11 +28,10 @@ for (let item of subPath) {
             };
         }
 
-        Apply.find(condition, function (err, doc) {
-            if (err) {
-                return res.json({ code: 1, msg: '后端出错了' })
-            }
-            return res.json({ code: 0, list: doc });
+        Apply.queryDocs(condition).then(result => {
+            return res.json(result);
+        }).catch(err => {
+            return res.send(err);
         })
     })
 }
@@ -40,13 +39,11 @@ for (let item of subPath) {
 // 编辑申请
 Router.post('/submit', function (req, res) {
     const apply = req.body;     // apply中包含userId
-    Apply.create({
-        ...apply
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err })
-        }
-        return res.json({ code: 0 });
+
+    Apply.insertDocs([{ ...apply }]).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -54,15 +51,11 @@ Router.post('/submit', function (req, res) {
 Router.post('/delete', function (req, res) {
     const { _id } = req.body;
     console.log(_id)
-    Apply.deleteOne({ _id }, function (err, doc) {
-        console.log(doc);
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
-        if (doc.deletedCount === 0) {
-            return res.json({ code: 1, msg: '删除失败' });
-        }
-        return res.json({ code: 0 });
+
+    Apply.deleteDocs({ _id }).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -76,20 +69,16 @@ Router.post('/update', function (req, res) {
     // isCancel：销假
     // isDelete：申请被拒绝之后的删除，并没有真正删除
     // state：部门主管端审批申请并修改申请状态，
+    let condition = { _id };
     let setObject = { [key]: val };
 
     // console.log(body._id)
 
-    Apply.updateOne({ _id }, { $set: setObject }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
-        if (doc.nModified === 0) {
-            return res.json({ code: 1, msg: '操作失败' })
-        }
-        return res.json({ code: 0 });
+    Apply.updateDoc(condition, setObject).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
-
 })
 
 module.exports = Router;

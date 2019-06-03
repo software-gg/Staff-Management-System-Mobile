@@ -2,12 +2,16 @@
 
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const User = model.getModel('user');
 const utils = require('utility');
+const excelUtils = require('../utils/excel');
+const userConfig = require('../config/excel').config['user'];
+const dateToName = require('../utils/date').dateToName;
+const multer = require('multer');
+const userDao = require('../dao/dao').selectModel('user');
+const _filter = { _id: 0, _v: 0 };
 
 // 数据库中的pwd和_v不显示在doc
-const _filter = { pwd: 0, _v: 0 };
+// const _filter = { pwd: 0, _v: 0 };
 
 // MD5加密密码
 function md5pwd(pwd) {
@@ -19,8 +23,9 @@ function md5pwd(pwd) {
  * 接口变了！！！改一下微信小程序中的接口！！！
  * *****************/
 // 员工、部门主管、经理获取单个用户信息
-Router.post('/list', function (req, res) {
-    const body = req.body;
+Router.get('/list', function (req, res) {
+    const body = req.query;
+    // console.log(body);
     let condition = {};
 
 
@@ -35,12 +40,11 @@ Router.post('/list', function (req, res) {
         ;
     }
 
-    User.find(condition, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
-
-        return res.json({ code: 0, user: doc });
+    userDao.queryDocs(condition, _filter).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        console.error(err);
+        return res.send(err);
     })
 })
 
@@ -53,22 +57,22 @@ Router.post('/login', function (req, res) {
 
     console.log(req.body)
 
-    User.findOne({
-        phone,
-        userId,
-        pwd/*: md5pwd(pwd)*/
-    }, _filter, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
-        if (!doc) {
-            console.log(doc)
-            return res.json({ code: 1, msg: '登录信息或密码有误' });
-        }
-
-        // 将cookie写入响应体
-        res.cookie('userid', doc._id);
-        return res.json({ code: 0, user: doc });
+    userDao.queryDocs({ phone, userId, pwd }, _filter).then(result => {
+        // console.log('query Result: ', result);
+        if (result.code === 2)
+            return res.json({ code: 1, msg: '登录信息或密码错误' });
+        if (result.code === 1)
+            return res.json(result);
+        if (result.list.length !== 1)
+            return res.json({ code: 1, msg: '查到多个用户！登陆失败' });
+        
+        // console.log('query Result before: ', result);
+        if (result.code === 0)
+            res.cookie('userid', result.list[0]._id);
+        // console.log('query Result: ', result);
+        return res.json({ code: 0, list: result.list[0] });
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -78,65 +82,160 @@ Router.post('/changeInfo', function (req, res) {
     const user = req.body;
     const { userId } = req.body;    // user
 
-    // console.log(user);
-    User.updateOne({
-        userId
-    }, { $set: { ...user } }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err })
-        }
-        if (doc.nModified === 0) {
-            return res.json({ code: 1, msg: '个人信息更新失败' })
-        }
-        return res.json({ code: 0, user: doc })
+    userDao.updateDoc({ userId }, { ...user }).then(result => {
+        if (result.code === 2)
+            return res.json({ code: 1, msg: '个人信息未修改' });
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
 // 员工修改密码
 Router.post('/changePwd', function (req, res) {
     const { userId, pwd, newPwd } = req.body;
-    User.updateOne({
-        userId,
-        pwd/*: md5pwd(pwd)*/
-    }, { $set: { pwd: newPwd/*: md5pwd(newPwd)*/ } }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err })
-        }
-        if (doc.nModified === 0) {
+
+    userDao.updateDoc({ userId, pwd }, { pwd: newPwd }).then(result => {
+        if (result.code === 2)
             return res.json({ code: 1, msg: '密码修改失败' });
-        }
-        return res.json({ code: 0 })
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
 // 部门主管和经理插入多个员工
 Router.post('/insert', function (req, res) {
     const { users } = req.body;
-    User.insertMany(users, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
 
-        return res.json({ code: 0 });
+    userDao.insertDocs(users).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
 // 删除所有与该员工相关的数据
-function deleteAllUser(userId) {
+function deleteAllData(userId = '') {
 
     return true;
 }
 
 // 部门主管和经理删除一个员工
 Router.post('/delete', function (req, res) {
-    const { userId } = req.body;
-    User.deleteOne({ userId }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
+    const body = req.body;
+    let condition = {};
 
-        if (deleteAllUser(userId))
+    if (body.userId)
+        condition.userId = body.userId;
+
+    userDao.deleteDocs(condition).then(result => {
+        if (result.code !== 0)
+            return res.json(result);
+
+        if (deleteAllData(condition))
             return res.json({ code: 0 });
+    }).catch(err => {
+        return res.send(err);
+    })
+})
+
+// 导出员工
+Router.get('/export/:id', function (req, res, next) {
+    const body = req.query;
+    let condition = {};
+    let headers = userConfig.headers;
+    let sheetName = userConfig.sheetName;
+
+    // console.log('headers: ', headers);
+
+    // 根据body中的key是否存在来确定查询条件
+    if (body.department)
+        condition.department = body.department;
+    else
+        /* 空语句 */;
+
+    userDao.queryDocs(condition, _filter).then(result => {
+
+        if (result.code === 2)
+            return res.json({ code: 1, msg: '当前没有用户' });
+        if (result.code === 1)
+            return res.json(result);
+
+        let data = result.list;
+
+        var date = dateToName(new Date());
+        var path = `public/doc/user/${date}.xlsx`;
+
+        console.log(headers);
+        console.log(data);
+
+        excelUtils.excelExports(sheetName, headers, data, path);
+        res.download(path)
+
+        // 导出 Excel
+        // xlsx.writeFile(wb, 'output.xlsx');
+        // res.setHeader('Content-Type', 'application/vnd.openxmlformats;charset=utf-8');
+        // res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+        // res.send(wb);
+
+    }).catch(err => {
+        res.send(err)
+    })
+});
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/doc/user')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+})
+const upload = multer({ storage });
+
+// 导入员工
+// upload.single()的参数即为前端对应的name属性的值
+Router.post('/import/:id', upload.single('userList'), function (req, res) {
+    const file = req.file;
+    let _headers = userConfig.headers.map(v => {
+        return v.name;
+    });
+
+    // console.log(req.file);
+
+
+    // var upload = multer({ storage });
+
+    /*
+    *    有小问题：当删除和插入多个user成功之后，返回{}，而不是返回{code: 0}
+    */
+    // 导入员工之前需要删除所有数据库中的员工
+    const excelResult = excelUtils.excelImports(file.path, _headers);
+    if (excelResult.code !== 0)
+        return res.json(excelResult);
+
+    const data = excelResult.data;
+
+    userDao.deleteDocs({}).then(result => {
+        if (result.code === 1)
+            return res.json({ code: 1, msg: '导入失败' });
+
+
+        // console.log(data[0]);
+
+        userDao.insertDocs(data).then(result2 => {
+            console.log('result2:', result2);
+            return res.json(result2);
+        }).catch(err => {
+            console.log(err);
+            return res.json({ code: 1, msg: err });
+        })
+
+    }).catch(err => {
+        console.log(err);
+        return res.json({ code: 1, msg: err });
     })
 })
 

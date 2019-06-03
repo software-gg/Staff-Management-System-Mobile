@@ -1,21 +1,16 @@
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const Message = model.getModel('message');
+const Message = require('../dao/dao').selectModel('message');
 
 // 员工、部门主管、经理获取消息列表
 Router.post('/list', function (req, res) {
     const { userId } = req.body;
-    Message.find({
-        userId
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
-        if (doc) {
-            return res.json({ code: 0, list: doc });
-        }
-        return res.json({ code: 1, msg: '后端出错' });
+    
+    // console.log('msg userId: ', userId);
+    Message.queryDocs({ userId }).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -23,17 +18,15 @@ Router.post('/list', function (req, res) {
 // 发送消息
 Router.post('/send', function (req, res) {
     const { userId, msg } = req.body;
-    Message.create({
+    const docs = [{
         userId,
         ...msg
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: err });
-        }
-        if (doc) {
-            return res.json({ code: 0 });
-        }
-        return res.json({ code: 1, msg: '后端出错' });
+    }]
+
+    Message.insertDocs(docs).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        console.log(err);
     })
 })
 

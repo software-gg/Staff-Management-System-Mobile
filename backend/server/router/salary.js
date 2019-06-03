@@ -1,7 +1,6 @@
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const Salary = model.getModel('salary');
+const Salary = require('../dao/dao').selectModel('salary');
 
 // 部门主管和经理查询员工工资情况
 Router.post('/list', function (req, res) {
@@ -14,15 +13,8 @@ Router.post('/list', function (req, res) {
         condition.departName = body.departName;
     }
 
-    Salary.find({
-        departName,
-        month
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
-
-        return res.json({ code: 0, list: doc });
+    Salary.queryDocs(condition).then(result => {
+        return res.json(result);
     })
 })
 

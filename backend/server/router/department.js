@@ -1,30 +1,26 @@
 const express = require('express');
 const Router = express.Router();
-const model = require('../model');
-const Department = model.getModel('department');
-const User = model.getModel('user');
+const models = require('../dao/dao');
+const Department = models.selectModel('department');
+const User = models.selectModel('user');
 
 // 经理查询部门
 Router.post('/list', function (req, res) {
     const { userId } = req.body;
-    Department.find({
-        userId
-    }, function (err, docDepart) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
+    const condition = { userId };
+    Department.queryDocs(condition).then(result => {
+        if (result.code !== 0)
+            return res.json(result);
 
         const users = doc.map((user) => {
             return { userId: user.director };
         });
 
-        User.find(users, function (err, docUser) {
-            if (err) {
-                return res.json({ code: 1, msg: '后端出错了' });
-            }
-
-            return res.json({ code: 0, list: docUser });
-        });
+        User.queryDocs(users).then(userRes => {
+            return res.json(userRes)
+        }).catch(err => {
+            return res.send(err);
+        })
     })
 })
 
@@ -32,18 +28,16 @@ Router.post('/list', function (req, res) {
 Router.post('/update', function (req, res) {
     const { departName, director } = req.body;
     const { _id } = depart;
+    const condition = { _id };
+    const settings = {
+        departName,
+        director
+    };
 
-    Department.updateOne({ _id }, {
-        $set: {
-            departName,
-            director
-        }
-    }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
-
-        return res.json({ code: 0 });
+    Department.updateDoc(condition, settings).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -51,12 +45,10 @@ Router.post('/update', function (req, res) {
 Router.post('/insert', function (req, res) {
     const { depart } = req.body;
 
-    Department.insertOne({ ...depart }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
+    const docs = [{ ...depart }];
 
-        return res.json({ code: 0 });
+    Department.insertDocs(docs).then(result => {
+        return res.json(result);
     })
 })
 
@@ -69,12 +61,11 @@ function deleteAllDepart(departName) {
 // 经理删除部门
 Router.post('/delete', function (req, res) {
     const { departName } = req.body;
+    const docs = [{ departName }];
 
-    Department.deleteOne({ departName }, function (err, doc) {
-        if (err) {
-            return res.json({ code: 1, msg: '后端出错了' });
-        }
-
+    Department.deleteDocs(docs).then(result => {
+        if (result.code !== 0)
+            return res.json(result);
         if (deleteAllDepart(departName))
             return res.json({ code: 0 });
     })
