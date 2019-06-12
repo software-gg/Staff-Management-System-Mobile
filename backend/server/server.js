@@ -13,6 +13,14 @@ const cookieParser = require('cookie-parser');
 // 文件上传和下载模块
 const multer = require('multer');
 
+// socket.io实时通信模块
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+io.on('connection', function(socket) {
+    console.log('socket.io has been connected');
+})
+
 // const publicRouter = require('./router/public');
 const userRouter = require('./router/user');
 const applyRouter = require('./router/apply');
@@ -22,8 +30,10 @@ const arrangeRouter = require('./router/arrange');
 const allArrangeRouter = require('./router/allarrange');
 const salaryRouter = require('./router/salary');
 const msgRouter = require('./router/msg');
+const departRouter = require('./router/department');
 
 const fs = require('fs');
+
 
 // 写文件的方法一
 // app.get('/write', function (req, res) {
@@ -88,9 +98,10 @@ app.use('/allarrange', allArrangeRouter);
 app.use('/arrange', arrangeRouter);
 app.use('/salary', salaryRouter);
 app.use('/msg', msgRouter);
+app.use('/department', departRouter);
 
 
-app.listen(9093, function () {
+server.listen(9093, function () {
     console.log('Node app start at port 9093');
 })
 

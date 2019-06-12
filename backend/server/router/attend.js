@@ -27,9 +27,9 @@ Router.post('/list', function (req, res) {
 
 // 员工打卡
 // Router.get('/swipe', function (req, res) {
-Router.post('/swipe', function (req, res) {
-    const { userId, time } = req.body;
-    console.log(userId, time);
+Router.get('/swipe', function (req, res) {
+    const { userId, time } = req.query;
+    // console.log(userId, time);
     // const { userId, time } = req.query;
     // 上班打卡时间：上班时间前1小时到下班时间
     // 下班打卡时间：下班时间到下班后一个小时
@@ -74,7 +74,8 @@ Router.post('/swipe', function (req, res) {
         if (!docForFind.realOnTime && docForFind.onTime <= afterTime && docForFind.offTime > currentTime) {
             updateCondition = { _id: docForFind._id };
             settings = {
-                realOnTime: new Date(time)
+                realOnTime: new Date(time),
+                state: 'on'
             };
             Arrange.updateDoc(updateCondition, settings).then(updateResult => {
                 if (updateResult.code !== 0)
@@ -111,7 +112,9 @@ Router.post('/swipe', function (req, res) {
             };
 
             Arrange.updateDoc(updateCondition, settings).then(queryResult => {
-                return res.json(queryResult);
+                if (queryResult.code !== 0)
+                    return res.json(queryResult);
+                return res.json({ code: 0, state });
             }).catch(err => {
                 return res.send(err);
             })

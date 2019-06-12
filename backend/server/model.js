@@ -39,6 +39,7 @@ const models = {
     // 点击删除时，系统会将isDelete字段置为 1
     apply: {
         'departName': { 'type': 'String' },   // 部门名
+        'month': {'type': 'Date'},            // 年月
         'userId': { 'type': 'String' },       // 员工对象
         'sentTime': { 'type': 'Date' },       // 申请提交时间
         'startTime': { 'type': 'Date' },      // 申请起始时间
@@ -101,7 +102,7 @@ const models = {
     // 消息集合
     message: {
         'userId': { 'type': 'String' },       // 工号
-        'sentTime': { 'type': Date },       // 发送时间
+        'sentTime': { 'type': 'Date' },       // 发送时间
         // 消息类型：
         // 员工端：上班提醒on、下班提醒off、申请通过pass、申请未通过unpass、加班申请提醒extra、
         // 部门主管端：提交了申请wait、调整工作安排提醒adjust

@@ -10,6 +10,7 @@ const arrangeConfig = require('../config/excel').config['arrange'];
 const excelUtils = require('../utils/excel');
 const _filter = { _v: 0 };
 
+
 // 员工按天查询工作安排
 Router.post('/list/user', function (req, res) {
     // 测试：userId = undefined时的情况？
@@ -29,21 +30,41 @@ Router.post('/list/user', function (req, res) {
     })
 })
 
+// 部门主管和经理查询工作安排
+Router.post('/list/manager', function (req, res) {
+    const body = req.body;
+    const { month } = body;
+    const condition = { month };
+    if (body.departName)
+        condition.departName = body.departName;
+
+    Arrange.queryDocs(condition).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
+    })
+})
+
 // 部门主管和经理调整某个员工某个月的工作安排
 Router.post('/update', function (req, res) {
     const { arrange } = req.body;
-    const { _id, onTime, offTime, isTemp, type, state } = arrange;
+    const { _id, userId, onTime, offTime, isTemp, type, state } = arrange;
+    // console.log('arrange', arrange);
 
     const condition = { _id };
     const settings = {
-        onTime,
-        offTime,
-        isTemp,
-        type,
-        state
+        userId: userId || '',
+        onTime: onTime || '',
+        offTime: offTime || '',
+        isTemp: isTemp || '',
+        type: type || '',
+        state: state || ''
     }
 
+    console.log(settings);
+
     Arrange.updateDoc(condition, settings).then(result => {
+        console.log('result: ', result);
         return res.json(result);
     }).catch(err => {
         return res.send(err);
@@ -54,7 +75,19 @@ Router.post('/update', function (req, res) {
 Router.post('/insert', function (req, res) {
     const { arrange } = req.body;
 
-    Arrange.insertDocs([arrange]).then(result => {
+    Arrange.insertDocs(arrange).then(result => {
+        console.log(result)
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
+    })
+})
+
+// 部门主管和经理删除细致班次安排
+Router.post('/delete', function (req, res) {
+    const { _id } = req.body;
+    const condition = { _id };
+    Arrange.deleteDocs(condition).then(result => {
         return res.json(result);
     }).catch(err => {
         return res.send(err);
@@ -162,64 +195,6 @@ Router.post('/adjust', function (req, res) {
 
     Arrange.updateDocs({ month, departName }, { isTemp }).then(result => {
         return res.json(result);
-    }).catch(err => {
-        console.log(err);
-    })
-})
-
-// 下一个月临时调整和永久调整工作安排
-Router.post('/nextmonth', function (req, res) {
-    // month必须为Date类型！！！
-    const { month, departName } = req.body;
-
-    /**
-     * 查询month是否在数据库中
-     * 如果在，则不调整
-     * 如果不在，则：
-     * 查询所有上个月的信息是否在数据库中
-     * 如果上个月的信息不在数据库中，则不调整。
-     * 如果上个月的信息在数据库中：
-     * 查询isTemp字段：
-     * 如果isTemp为1临时调整，则下一个月的isTemp=0, previousId=previousId;
-     * 如果isTemp为0永久调整，则下一个月的isTemp = 0, previousId = 当月的_id
-     */
-
-    Arrange.queryDocs({ month, departName }).then(thismonthRes => {
-        if (thismonthRes.code === 1 || thismonthRes.code === 0)
-            return res.json({ code: 1, msg: '当月安排无需自动导入' });
-
-        //当没有查到本月记录时，查询上个月的信息是否在数据库中
-        // 获取上个月的日期
-        let lastMonth = calLastMonth(month);
-
-        Arrange.queryDocs({ month: lastMonth, departName }).then(lastmonthRes => {
-            // 如果上个月的信息不在数据库中，则不调整。
-            if (lastmonthRes.code !== 0)
-                return res.json(lastmonthRes);
-
-            const lastMonthArranges = lastmonthRes.list;
-            const newArranges = lastMonthArranges.map((v, i) => {
-                return {
-                    departName: v.departName,
-                    userId: v.userId,
-                    month: month,
-                    location: v.location,
-                    onTime: v.onTime,
-                    offTime: v.offTime,
-                    type: v.type,
-                    previousId: (v.isTemp ? v.previousId : month.getMonth()),
-                    isTemp: 0
-                }
-            })
-
-            Arrange.insertDocs(newArranges).then(insertRes => {
-                return res.json(insertRes);
-            }).catch(err => {
-                console.log(err);
-            })
-        }).catch(err => {
-            console.log(err);
-        })
     }).catch(err => {
         console.log(err);
     })

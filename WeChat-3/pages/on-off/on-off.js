@@ -400,7 +400,7 @@ var app = getApp();
 Page({
   data: {
     tabs: ["考勤打卡", "工作安排", "工作情况"],
-    activeIndex: 0,
+    activeIndex1: 0,
     sliderOffset: 0,
     sliderLeft: 0,
     arr: [],
@@ -414,7 +414,17 @@ Page({
       name: 'sendor',
       value: '自动上下班提醒'
     }, ],
-    list: [{
+    canlender: {
+      'month': new Date().getMonth() + 1,
+      'date': new Date().getDate(),
+      "day": new Date().getDay(),
+      'year': new Date().getFullYear(),
+      "weeks": [],
+      //  这是第几个索引
+      'thisIndex': 0,
+      'thisDay': '1980/01/01',
+    },
+    arrangeList: [/*{
         name: '正常上班',
         value1: null,
         value2: null,
@@ -433,9 +443,9 @@ Page({
         name: '请假',
         value1: null,
         value2: null,
-      }
+      }*/
     ],
-    list2: [{
+    statusList: [/*{
         name: '上班打卡',
         value: 'null'
       },
@@ -450,40 +460,44 @@ Page({
       {
         name: '加班结束',
         value: 'null',
-      },
+      },*/
     ]
   },
 
   //获取日历相关参数
   dataTime: function() {
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = date.getMonth();
-    var months = date.getMonth() + 1;
+    var _date = new Date()
+    var year = _date.getFullYear() //年
+    var month = _date.getMonth() + 1 //月
+    var date = _date.getDate() //日
+    this.showThisDay(_date, year, month, date);
+    // var date = new Date();
+    // var year = date.getFullYear();
+    // var month = date.getMonth();
+    // var months = date.getMonth() + 1;
 
-    //获取现今年份
-    this.data.year = year;
+    // //获取现今年份
+    // this.data.year = year;
 
-    //获取现今月份
-    this.data.month = months;
+    // //获取现今月份
+    // this.data.month = months;
 
-    //获取今日日期
-    this.data.getDate = date.getDate();
+    // //获取今日日期
+    // this.data.getDate = date.getDate();
 
-    //最后一天是几号
-    var d = new Date(year, months, 0);
-    this.data.lastDay = d.getDate();
+    // //最后一天是几号
+    // var d = new Date(year, months, 0);
+    // this.data.lastDay = d.getDate();
 
-    //第一天星期几
-    let firstDay = new Date(year, month, 1);
-    this.data.firstDay = firstDay.getDay();
+    // //第一天星期几
+    // let firstDay = new Date(year, month, 1);
+    // this.data.firstDay = firstDay.getDay();
   },
 
 
   onLoad: function() {
-
-
     this.dataTime();
+    console.log(this.data.activeIndex1)
     //根据得到今月的最后一天日期遍历 得到所有日期
     for (var i = 1; i < this.data.lastDay + 1; i++) {
       this.data.arr.push(i);
@@ -508,63 +522,9 @@ Page({
       }
     });
   },
-
-  handleSwipe: function() {
-    wx.showLoading({
-      title: 'loading...',
-    })
-    const url = app.globalData.proxy + '/attend/swipe';
-    const userId = wx.getStorageSync('user').userId;
-    console.log(userId);
-    const time = new Date();
-
-    wx.request({
-      url,
-      method: 'POST',
-      data: {
-        userId,
-        time
-      },
-      success(res) {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          let word;
-          switch (res.data.state) {
-            case 'on': word = '上班成功'; break;
-            case 'off': word = '下班成功'; break;
-            case 'extra': word = '可以申请加班'; break;
-            case 'early': word = '早退'; break;
-          }
-          wx.showToast({
-            title: word,
-            icon: 'success',
-            duration: 1000
-          })
-          console.log(res.data.state)
-        } else {
-          wx.showToast({
-            title: res.data.msg,
-            icon: 'none',
-            duration: 1000
-          })
-        }
-      },
-      fail(err) {
-        wx.showToast({
-          title: err,
-          icon: 'none',
-          duration: 1000
-        })
-      },
-      complete(res) {
-        wx.hideLoading();
-      }
-    })
-  },
-
   onShow: function() {
-
     this.setData({
-      activeIndex: app.globalData.activeWork,
+      activeIndex1: app.globalData.activeWork,
     })
     var that = this;
     wx.getSystemInfo({
@@ -577,46 +537,210 @@ Page({
     });
   },
   on_but: function() {
-    let self = this;
-
-    // wx.downloadFile({
-    //   url: app.globalData.proxy + '/user/export/1',
-    //   success(res) {
-    //     if (res.statusCode === 200) {
-    //       console.log(res.tempFilePath);
-    //       console.log(res.filePath);
-    //     } else {
-    //       console.log(res);
-    //     }
-    //   },
-    //   fail(res) {
-    //     console.error(res);
-    //   }
-    // })
-
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
         console.log(res)
-        self.handleSwipe();
-      },
-      fail(err) {
-        console.log(err)
       }
     })
   },
-  checkboxChange(e) {
-    console.log('checkbox发生change事件，携带value值为：', e.detail.value)
-    const url = app.globalData.proxy + '/remind';
-    const val = e.detail.value[0];
-    const isRemind = (val === 'sendor');
+  showThisDay: function(date, _year, _month, _date1) {
+    // 页面初始化 options为页面跳转所带来的参数
+    var canlender = [],
+      _date = new Date(date);
+    var year = _year,
+      month = _month,
+      date = _date1;
+    console.info(year + "-" + month + "-" + date)
+    var day = _date.getDay();
+    var firstDay = new Date(year, month - 1, 1).getDay();
+    var lastMonthDays = [];
+    // 上个月需要显示的天数
+    for (var i = firstDay - 1; i >= 0; i--) {
+      console.warn(new Date(year, month, -i).getDate())
+      lastMonthDays.push({
+        'year': year,
+        'date': new Date(year, month, -i).getDate() + '',
+        'month': month - 1,
+        'click': false,
+        'noDay': true,
+      })
+    }
+    var currentMonthDys = [];
+    //  这个月显示的天数进行判断  如果已经过去则没法点击
+    console.log('this date' + date);
+    for (var i = 1; i <= new Date(year, month, 0).getDate(); i++) {
+      if (i > date) {
+        currentMonthDys.push({
+          'year': year,
+          'date': i + "",
+          'month': month,
+          'click': true,
+          'noDay': false,
+        })
+      } else if (i == date) {
+        //  这里会打印的从1开始的
+        var fristDayLength = firstDay + i - 1;
+        this.setData({
+          'canlender.thisIndex': 0 + ',' + fristDayLength,
+          'canlender.thisDay': year + '/' + month + '/' + i
+        })
+        currentMonthDys.push({
+          'year': year,
+          'date': i + "",
+          'month': month,
+          'click': false,
+          'noDay': false,
+        })
+      } else {
+        currentMonthDys.push({
+          'year': year,
+          'date': i + "",
+          'month': month,
+          'click': false,
+          'noDay': true,
+        })
+      }
+    }
+    var nextMonthDays = []
+    var endDay = new Date(year, month, 0).getDay();
+    for (var i = 1; i < 7 - endDay; i++) {
+      nextMonthDays.push({
+        'year': year,
+        'date': i + '',
+        'month': parseInt(month) + 1,
+        'click': false,
+        'noDay': true,
+      })
+    }
 
+    canlender = canlender.concat(lastMonthDays, currentMonthDys, nextMonthDays)
+    var weeks = []
+
+    for (var i = 0; i < canlender.length; i++) {
+      if (i % 7 == 0) {
+        weeks[parseInt(i / 7)] = new Array(7);
+      }
+      weeks[parseInt(i / 7)][i % 7] = canlender[i]
+    }
+
+    console.info(weeks)
+    this.setData({
+      "canlender.weeks": weeks
+    })
+  },
+  /**
+   *  获取到当前天数
+   */
+  getThisData: function(dom) {
+    const self = this;
+    var xy = dom.currentTarget.dataset.index,
+      thisDay = dom.currentTarget.dataset.date;
+    var xyArr = xy.split(',');
+    var x = parseInt(xyArr[0]),
+      y = parseInt(xyArr[1]);
+    if (xyArr[2] == true || xyArr[2] == 'true') return;
+    //  index为从0开始的索引
+    var thisDayDomClick = "canlender.weeks[" + x + "][" + [y] + "].click";
+    var oldXy = this.data.canlender.thisIndex;
+    var oldXyArr = oldXy.split(',');
+    var oldx = parseInt(oldXyArr[0]),
+      oldy = parseInt(oldXyArr[1]);
+    var oldDayDom = "canlender.weeks[" + oldx + "][" + oldy + "].click";
+    this.setData({
+      [oldDayDom]: true,
+      [thisDayDomClick]: false,
+      'canlender.thisIndex': x + ',' + y,
+      'canlender.thisDay': thisDay,
+    })
+
+    var nowDate = new Date(thisDay.split('/').join('-'));
+    var startDate = new Date(nowDate.getTime());
+    var endDate = new Date(nowDate.getTime() + 24 * 3600 * 1000);
+    console.log(startDate, endDate)
+
+    const url = app.globalData.proxy + '/arrange/list/user';
     wx.request({
       url,
       method: 'POST',
       data: {
         userId: wx.getStorageSync('user').userId,
-        isRemind
+        startDate,
+        endDate
+      },
+      success(res) {
+        if (res.data.code !== 0) {
+          wx.showToast({
+            title: res.data.msg,
+            icon: 'none',
+            duration: 1000
+          })
+          self.setData({
+            arrangeList: [],
+            statusList: []
+          })
+        } else {
+          var list = res.data.list.map(v => {
+            var type, state;
+            switch(v.type) {
+              case 'leave': type = '请假';  break;
+              case 'extra': type = '部门加班';  break;
+              case 'ordinary':  type = '正常上班';  break;
+              case 'temp':  type = '临时加班';      break;
+              default:      type = '上班';          break;
+            }
+            switch(v.state) {
+              case 'on': state = '上班打卡';  break;
+              case 'off': state = '下班打卡'; break;
+              case 'late':  state = '迟到';   break;
+              case 'early': state = '早退';   break;
+              case 'extra': state = '可申请加班'; break;
+            }
+            return {
+              arrangeList: {
+                onTime: new Date(v.onTime).toLocaleTimeString(),
+                offTime: new Date(v.offTime).toLocaleTimeString(),
+                type: type
+              }, 
+              statusList: {
+                realOnTime: new Date(v.realOnTime).toLocaleTimeString(),
+                realOffTime: new Date(v.realOffTime).toLocaleTimeString(),
+                state: state,
+                isExtra: v.state === 'extra'
+              }
+            }
+          })
+          self.setData({
+            arrangeList: list.map(v => v.arrangeList),
+            statusList: list.map(v => v.statusList)
+          })
+        }
+      },
+      fail(err) {
+        console.log(err);
+      }
+    })
+  },
+  /**
+   *  bindDateChange 
+   */
+  bindDateChange: function(e) {
+    var date = e.detail.value;
+    var dateArr = date.split('-');
+    var month = dateArr[1].substring(0, 1) == 0 || dateArr[1].substring(0, 1) == '0' ? dateArr[1].replace(/^[0-9]/, '') : dateArr[1];
+    var day = dateArr[2].substring(0, 1) == 0 || dateArr[2].substring(0, 1) == '0' ? dateArr[2].replace(/^[0-9]/, '') : dateArr[2];
+    var dateObj = new Date(dateArr[0] + '-' + month + '-' + day);
+    this.showThisDay(dateObj, dateArr[0], month, day);
+  },
+
+  checkboxChange(e) {
+    var url = app.globalData.proxy + '/remind';
+    wx.request({
+      url,
+      method: 'POST',
+      data: {
+        userId: wx.getStorageSync('user').userId,
+        isRemind: e.detail.value[0] === 'sendor'
       },
       success(res) {
         if (res.statusCode === 200) {
@@ -629,37 +753,22 @@ Page({
           } else {
             wx.showToast({
               title: '设置成功',
-              icon: 'none',
+              icon: 'success',
               duration: 1000
             })
-            const user = wx.getStorageSync('user');
-            wx.setStorageSync('user', {
-              ...user,
-              isRemind
-            })
           }
-        } else {
-          wx.showToast({
-            title: '出错啦',
-            icon: 'none',
-            duration: 1000
-          })
         }
       },
       fail(err) {
-        wx.showToast({
-          title: '设置失败',
-          icon: 'none',
-          duration: 1000
-        })
-      },
+        console.log(err);
+      }
     })
+    console.log('checkbox发生change事件，携带value值为：', e.detail.value)
   },
   tabClick: function(e) {
-    app.globalData.activeWork = e.currentTarget.id;
     this.setData({
       sliderOffset: e.currentTarget.offsetLeft,
-      activeIndex: e.currentTarget.id
+      activeIndex1: e.currentTarget.id
     });
   }
 });

@@ -23,6 +23,7 @@ function selectModel(modelName) {
     async function updateDoc(condition, settings) {
         let result = {};
         await Model.updateOne(condition, { $set: settings }, function (err, doc) {
+            console.log('doc: ', doc);
             if (err) {
                 result = { code: 1, msg: err };
             } else if (doc.nModified === 0) {
@@ -53,9 +54,10 @@ function selectModel(modelName) {
     async function deleteDocs(condition) {
         let result = {};
         await Model.deleteMany(condition, function (err, doc) {
+            console.log(doc);
             if (err) {
                 result = { code: 1, msg: '后端出错了' };
-            } else if (doc.deletedCount !== condition.length) {
+            } else if (doc.deletedCount !== 1) {
                 result = { code: 2, msg: '删除失败' };
             } else {
                 result = { code: 0 };

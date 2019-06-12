@@ -6,13 +6,15 @@ const User = models.selectModel('user');
 
 // 经理查询部门
 Router.post('/list', function (req, res) {
-    const { userId } = req.body;
-    const condition = { userId };
+    const body = req.body;
+    const condition = {};
+    // if (body.userId)
+    //     condition.userId = body.userId;
     Department.queryDocs(condition).then(result => {
         if (result.code !== 0)
             return res.json(result);
 
-        const users = doc.map((user) => {
+        const users = result.list.map((user) => {
             return { userId: user.director };
         });
 
@@ -60,13 +62,15 @@ function deleteAllDepart(departName) {
 
 // 经理删除部门
 Router.post('/delete', function (req, res) {
-    const { departName } = req.body;
-    const docs = [{ departName }];
+    const { _id } = req.body;
+    // const docs = [{ departName }];
 
-    Department.deleteDocs(docs).then(result => {
+    Department.deleteDocs({ _id }).then(result => {
         if (result.code !== 0)
             return res.json(result);
         if (deleteAllDepart(departName))
             return res.json({ code: 0 });
     })
 })
+
+module.exports = Router;

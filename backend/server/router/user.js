@@ -53,11 +53,18 @@ Router.post('/login', function (req, res) {
     // req.query: 解析URL中?后面的属性
     // req.body：解析post的属性（需要用到body-parser插件
     // req.params：解析在前端通过get传输到后端的参数
-    const { phone, userId, pwd } = req.body;
+    const { userId, pwd } = req.body;
+    const condition = { userId, pwd };
+    if (req.body.type)
+        condition.type = req.body.type;
+    if (req.body.phone) {
+        condition.type = "employee";
+        condition.phone = req.body.phone;
+    }
 
     console.log(req.body)
 
-    userDao.queryDocs({ phone, userId, pwd }, _filter).then(result => {
+    userDao.queryDocs(condition, _filter).then(result => {
         // console.log('query Result: ', result);
         if (result.code === 2)
             return res.json({ code: 1, msg: '登录信息或密码错误' });
@@ -65,7 +72,7 @@ Router.post('/login', function (req, res) {
             return res.json(result);
         if (result.list.length !== 1)
             return res.json({ code: 1, msg: '查到多个用户！登陆失败' });
-        
+
         // console.log('query Result before: ', result);
         if (result.code === 0)
             res.cookie('userid', result.list[0]._id);
@@ -83,6 +90,18 @@ Router.post('/changeInfo', function (req, res) {
     const { userId } = req.body;    // user
 
     userDao.updateDoc({ userId }, { ...user }).then(result => {
+        if (result.code === 2)
+            return res.json({ code: 1, msg: '个人信息未修改' });
+        return res.json(result);
+    }).catch(err => {
+        return res.send(err);
+    })
+})
+
+Router.post('/update', function (req, res) {
+    const { _id, userInfo } = req.body;
+
+    userDao.updateDoc({ _id }, userInfo).then(result => {
         if (result.code === 2)
             return res.json({ code: 1, msg: '个人信息未修改' });
         return res.json(result);
@@ -136,13 +155,14 @@ Router.post('/delete', function (req, res) {
         if (deleteAllData(condition))
             return res.json({ code: 0 });
     }).catch(err => {
-        return res.send(err);
+        console.log(err);
+        return res.json({ code: 1, msg: err });
     })
 })
 
 // 导出员工
-Router.get('/export/:id', function (req, res, next) {
-    const body = req.query;
+Router.post('/export/:id', function (req, res, next) {
+    const body = req.body;
     let condition = {};
     let headers = userConfig.headers;
     let sheetName = userConfig.sheetName;
@@ -150,8 +170,8 @@ Router.get('/export/:id', function (req, res, next) {
     // console.log('headers: ', headers);
 
     // 根据body中的key是否存在来确定查询条件
-    if (body.department)
-        condition.department = body.department;
+    if (body.departName)
+        condition.departName = body.departName;
     else
         /* 空语句 */;
 
@@ -180,7 +200,8 @@ Router.get('/export/:id', function (req, res, next) {
         // res.send(wb);
 
     }).catch(err => {
-        res.send(err)
+        console.log(err);
+        return res.json({ code: 1, msg: err });
     })
 });
 
@@ -218,8 +239,8 @@ Router.post('/import/:id', upload.single('userList'), function (req, res) {
 
     const data = excelResult.data;
 
-    userDao.deleteDocs({}).then(result => {
-        if (result.code === 1)
+    userDao.deleteDocs(condition).then(result => {
+        if (result.code !== 0)
             return res.json({ code: 1, msg: '导入失败' });
 
 

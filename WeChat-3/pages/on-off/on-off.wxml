@@ -27,60 +27,160 @@
     <view class="weui-tab">
       <view class="weui-navbar">
         <block wx:for="{{tabs}}" wx:key="*this">
-          <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+          <view id="{{index}}" class="weui-navbar__item {{activeIndex1 == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
             <view class="weui-navbar__title">{{item}}</view>
           </view>
         </block>
         <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
       </view>
       <view class="weui-tab__panel">
-        <view class="weui-tab__content1" hidden="{{activeIndex != 0}}">
-          <view class="swipe-button">
-            <button type='primary' bindtap='on_but'>点我扫码</button>
-            <!-- <text>点我扫码
+        <view class="weui-tab__content1" hidden="{{activeIndex1 != 0}}">
+          <view>
+            <text>点我扫码
                     </text>
-            <image src='../../image/下载.jpg' class='image' bindtap='on_but'></image> -->
+            <image src='../../image/下载.jpg' class='image' bindtap='on_but'></image>
           </view>
         </view>
-        <view class="weui-tab__content2" hidden="{{activeIndex != 1}}">
-          <view class='box1' style='width: {{ sysW * 7 }}px'>
-            <view class='dateBox'>{{ year }} - {{ month}}</view>
-            <block wx:for='{{ weekArr }}' wx:key="{{index}}">
-              <view style='width: {{ sysW }}px; height: {{sysW }}px; line-height: {{ sysW }}px;'>{{ item }} </view>
-            </block>
-            <block wx:for='{{ arr }}' wx:key="{{index}}">
-              <view style='{{ index == 0 ? "margin-left:" + sysW * marLet + "px;" : "" }}width: {{ sysW }}px; height: {{ sysW }}px; line-height: {{ sysW }}px;' class='{{ item ==  getDate ? "dateOn" : ""}}'>{{ item }}</view>
-            </block>
+        <view class="weui-tab__content2" hidden="{{activeIndex1 != 1}}">
+          <view class='box1' style='width: {{ sysW * 10 }}px'>
+            <!-- <view class='dateBox'>{{ year }} - {{ month}}</view>
+                    <block wx:for='{{ weekArr }}'>
+                      <view style='width: {{ sysW }}px; height: {{sysW }}px; line-height: {{ sysW }}px;'>{{ item }}                       </view>
+                     </block>
+                    <block wx:for='{{ arr }}'>
+                    <view style='{{ index == 0 ? "margin-left:" + sysW * marLet + "px;" : "" }}width: {{ sysW }}px; height: {{ sysW }}px; line-height: {{ sysW }}px;' class='{{ item ==  getDate ? "dateOn" : ""}}'>{{ item }}</view>
+                    </block> -->
+
+            <view class='calendar' style='height:270px;width:400px;'>
+              <view class="page">
+                <view class="page__bd page__bd_spacing">
+                  <!-- 显示日期以及点击 -->
+                  <view class="weui-flex">
+                    <view>
+                      <view class="placeholder">←</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <picker mode="date" value="{{date}}" start="2000-01-01" end="3000-12-31" bindchange="bindDateChange">
+                        <view class="placeholder chooseDay">{{canlender.thisDay}}</view>
+                      </picker>
+                    </view>
+                    <view>
+                      <view class="placeholder">→</view>
+                    </view>
+                  </view>
+                  <!-- flex的周期显示 -->
+                  <view class="weui-flex flex-week">
+                    <view class="weui-flex__item">
+                      <view class="placeholder">日</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">一</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">二</view>
+                    </view>
+                    <view class="weui-flex__item" style='height：10px；'>
+                      <view class="placeholder">三</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">四</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">五</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">六</view>
+                    </view>
+                  </view>
+                  <!-- flex的日期显示 -->
+                  <block wx:for="{{canlender.weeks}}" wx:key="this" wx:for-item="week" wx:for-index="i">
+                    <view class="weui-flex flex-day">
+                      <view class="weui-flex__item" wx:for="{{week}}" wx:key="this" wx:for-item="day">
+                        <view class="placeholder  {{day.click ? 'day_late' : ''}} {{day.noDay ? 'day_no' : ''}}" data-index="{{i}},{{index}},{{day.noDay}}" data-date="{{day.year}}/{{day.month}}/{{day.date}}" bindtap='getThisData'>{{day.date}}</view>
+                      </view>
+                    </view>
+                  </block>
+                </view>
+              </view>
+
+            </view>
           </view>
           <view class='hr'></view>
           <checkbox-group class="checkbox" bindchange="checkboxChange">
-            <label wx:for="{{items}}" wx:key="{{index}}">
+            <label wx:for="{{items}}">
               <checkbox value="{{item.name}}" checked="{{item.checked}}" /> {{item.value}}
             </label>
           </checkbox-group>
           <view class='space'></view>
-          <view class='time' wx:for="{{list}}" wx:key="{{index}}">
-            <view class='first'>{{item.name}}</view>
-            <view class='second'>{{item.value1}}-{{item.value2}}</view>
+          <view class='time' wx:for="{{arrangeList}}">
+            <view class='first'>{{item.type}}</view>
+            <view class='second'>{{item.onTime}}-{{item.offTime}}</view>
           </view>
         </view>
-        <view class="weui-tab__content3" hidden="{{activeIndex != 2}}">
-          <view class='box1' style='width: {{ sysW * 7 }}px'>
-            <view class='dateBox'>{{ year }} - {{ month}}</view>
-            <block wx:for='{{ weekArr }}' wx:key="{{index}}">
-              <view style='width: {{ sysW }}px; height: {{sysW }}px; line-height: {{ sysW }}px;'>{{ item }} </view>
-            </block>
-            <block wx:for='{{ arr }}' wx:key="{{index}}">
-              <view style='{{ index == 0 ? "margin-left:" + sysW * marLet + "px;" : "" }}width: {{ sysW }}px; height: {{ sysW }}px; line-height: {{ sysW }}px;' class='{{ item ==  getDate ? "dateOn" : ""}}'>{{ item }}</view>
-            </block>
+        <view class="weui-tab__content3" hidden="{{activeIndex1 != 2}}">
+          <view class='box1' style='width: {{ sysW * 10 }}px'>
+            <view class='calendar' style='height:270px;width:400px;'>
+              <view class="page">
+                <view class="page__bd page__bd_spacing">
+                  <!-- 显示日期以及点击 -->
+                  <view class="weui-flex">
+                    <view>
+                      <view class="placeholder">←</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+                        <view class="placeholder chooseDay">{{canlender.thisDay}}</view>
+                      </picker>
+                    </view>
+                    <view>
+                      <view class="placeholder">→</view>
+                    </view>
+                  </view>
+                  <!-- flex的周期显示 -->
+                  <view class="weui-flex flex-week">
+                    <view class="weui-flex__item">
+                      <view class="placeholder">日</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">一</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">二</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">三</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">四</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">五</view>
+                    </view>
+                    <view class="weui-flex__item">
+                      <view class="placeholder">六</view>
+                    </view>
+                  </view>
+                  <!-- flex的日期显示 -->
+                  <block wx:for="{{canlender.weeks}}" wx:key="this" wx:for-item="week" wx:for-index="i">
+                    <view class="weui-flex flex-day">
+                      <view class="weui-flex__item" wx:for="{{week}}" wx:key="this" wx:for-item="day">
+                        <view class="placeholder  {{day.click ? 'day_late' : ''}} {{day.noDay ? 'day_no' : ''}}" data-index="{{i}},{{index}},{{day.noDay}}" data-date="{{day.year}}/{{day.month}}/{{day.date}}" bindtap='getThisData'>{{day.date}}</view>
+                      </view>
+                    </view>
+                  </block>
+                </view>
+              </view>
+
+            </view>
+
           </view>
           <view class='hr'></view>
           <view class='space'>
-            <navigator class='overtime' hover-class='hover' src=''>点我加班</navigator>
+            <!-- <navigator class='overtime' hover-class='hover' src=''>点我加班</navigator> -->
           </view>
-          <view class='time' wx:for="{{list2}}" wx:key="{{index}}">
-            <view class='first'>{{item.name}}</view>
-            <view class='second'>{{item.value}}</view>
+          <view class='time' wx:for="{{statusList}}">
+            <view class='first'>{{item.state}}</view>
+            <view class='second'>{{item.realOnTime}}-{{item.realOffTime}}</view>
           </view>
         </view>
       </view>
