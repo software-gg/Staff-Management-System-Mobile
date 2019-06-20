@@ -1,5 +1,6 @@
 // pages/message/message.js
 var app = getApp();
+const utils = require('../../utils/util.js');
 Page({
 
   /**
@@ -108,7 +109,12 @@ Page({
       success(res) {
         // console.log(res.data.list)
         self.setData({
-          list: res.data.list
+          list: res.data.list.map(v => {
+            return {
+              ...v,
+              sentTime: utils.formatTime(v.sentTime)
+            }
+          })
         })
       },
       fail(err) {

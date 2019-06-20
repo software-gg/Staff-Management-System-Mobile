@@ -1,4 +1,5 @@
 var sliderWidth = 96; // 需要设置slider的宽度，用于计算中间位置
+const utils = require('../../utils/util.js');
 var app = getApp();
 Page({
   data: {
@@ -193,8 +194,15 @@ Page({
         userId: wx.getStorageSync('user').userId
       },
       success(res) {
-        // console.log(res.data.list);
-        that.setListData(res.data.list)
+        const list = res.data.list.map(v => {
+          return {
+            ...v,
+            sentTime: utils.formatTime(v.sentTime),
+            startTime: utils.formatTime(v.startTime),
+            endTime: utils.formatTime(v.endTime),
+          }
+        })
+        that.setListData(list)
       },
       fail(err) {
         wx.showToast({

@@ -397,6 +397,7 @@
 // })
 var sliderWidth = 96; // 需要设置slider的宽度，用于计算中间位置
 var app = getApp();
+const utils = require('../../utils/util.js');
 Page({
   data: {
     tabs: ["考勤打卡", "工作安排", "工作情况"],
@@ -504,7 +505,7 @@ Page({
     }
     var res = wx.getSystemInfoSync();
     this.setData({
-      sysW: res.windowHeight / 18, //更具屏幕宽度变化自动设置宽度
+      sysW: res.windowHeight / 18,  
       height: (res.windowHeight / 25) - 5,
       marLet: this.data.firstDay,
       arr: this.data.arr,
@@ -537,10 +538,44 @@ Page({
     });
   },
   on_but: function() {
+    const decode = {
+      on: '上班打卡',
+      off: '下班打卡',
+      early: '早退',
+      extra: '可申请加班',
+      late: '迟到打卡'
+    }
+    var self = this;
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
         console.log(res)
+      },
+      complete(res) {
+        wx.request({
+          url: app.globalData.proxy + '/attend/swipe',
+          method: 'POST',
+          data: {
+            userId: wx.getStorageSync('user').userId,
+            time: utils.formatTime(new Date())
+          },
+          success(res1) {
+            if (res1.statusCode === 200) {
+              if (res1.data.code !== 0)
+                wx.showToast({
+                  title: res1.data.msg || '',
+                  icon: 'none'
+                })
+              else {
+                wx.showToast({
+                  title: decode[res1.data.state],
+                  icon: 'success'
+                })
+              }
+                
+            }
+          }
+        })
       }
     })
   },

@@ -89,6 +89,8 @@ Page({
     const endTime = new Date(this.data.edate + ' ' + this.data.etime);
     const reason = this.data.reason;
     const type = this.data.type[this.data.typeIndex];
+    const month = sentTime.getFullYear() + '-' + sentTime.getMonth() + '-01';
+    console.log(month);
     const apply = {
       departName,
       userId,
@@ -98,6 +100,7 @@ Page({
       type,
       reason,
       state: 'wait',
+      month,
       isCancel: 0,
       isDelete: 0
     };

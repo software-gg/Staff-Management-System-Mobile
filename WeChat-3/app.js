@@ -43,7 +43,7 @@ App({
     })
   },
   globalData: {
-    proxy: 'http://localhost:9093',
+    proxy: 'http://10.16.169.74:9093',
     workid: '',
     user: '',
     // _openid: null,
