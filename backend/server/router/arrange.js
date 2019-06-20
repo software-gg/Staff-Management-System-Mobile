@@ -9,7 +9,7 @@ const { dateToName, calLastMonth } = dateUtils;
 const arrangeConfig = require('../config/excel').config['arrange'];
 const excelUtils = require('../utils/excel');
 const _filter = { _v: 0 };
-
+const model = require('../model').getModel('arrange')
 
 // 员工按天查询工作安排
 Router.post('/list/user', function (req, res) {
@@ -33,10 +33,11 @@ Router.post('/list/user', function (req, res) {
 // 部门主管和经理查询工作安排
 Router.post('/list/manager', function (req, res) {
     const body = req.body;
-    const { month } = body;
-    const condition = { month };
-    if (body.departName)
-        condition.departName = body.departName;
+    const condition = body;
+    // const condition = { month };
+    
+    // if (!body.departName)
+    //     delete condition.departName;
 
     Arrange.queryDocs(condition).then(result => {
         return res.json(result);
@@ -75,12 +76,19 @@ Router.post('/update', function (req, res) {
 Router.post('/insert', function (req, res) {
     const { arrange } = req.body;
 
-    Arrange.insertDocs(arrange).then(result => {
-        console.log(result)
-        return res.json(result);
-    }).catch(err => {
-        return res.send(err);
+    model.create([arrange], function (err, doc) {
+        if (err) {
+            return res.json({ code: 1, msg: '后端出错了' });
+        } else {
+            return res.json({ code: 0, list: doc });
+        }
     })
+    // Arrange.insertDocs([arrange]).then(result => {
+    //     console.log(result)
+    //     return res.json(result);
+    // }).catch(err => {
+    //     return res.send(err);
+    // })
 })
 
 // 部门主管和经理删除细致班次安排

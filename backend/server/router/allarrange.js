@@ -10,22 +10,97 @@ const dateToName = require('../utils/date').dateToName;
 const excelUtils = require('../utils/excel');
 const allArrangeConfig = require('../config/excel').config['allArrange'];
 const _filter = { _v: 0 };
+const model = require('../model').getModel('allArrange');
+const modelArr = require('../model').getModel('arrange');
 
 // 部门主管和经理：整体班次安排查询
 Router.post('/list', function (req, res) {
     // 传入的参数：startDate, endDate, onTime, departName
-    const { month } = req.body;
-    let condition = {
-        month
-    };
+    const body = req.body;
+    const condition = body;
+    // let condition = {
+    //     month
+    // };
 
     // 如果body中包含departName字段，则是部门主管进行的查询；否则为经理进行的查询
-    if (body.departName) {
-        condition.departName = body.departName;
-    }
+    // if (body.departName) {
+    //     condition.departName = body.departName;
+    // }
 
     AllArrange.queryDocs(condition, _filter).then(result => {
         return res.json(result);
+    }).catch(err => {
+        console.error(err);
+        return res.send(err);
+    })
+})
+
+Router.post('/insert', function (req, res) {
+    const body = req.body;
+    const { allArrange } = req.body;
+    model.create(allArrange, function (err, doc) {
+        console.log(doc);
+        if (err)
+            return res.json({ code: 1, msg: '后端出错了' });
+
+        const allArrs = doc || [];
+        const allArr = [];
+        allArrs.forEach(arr => {
+            const users = arr.users || [];
+            users.forEach(user => {
+                allArr.push({
+                    departName: arr.departName,
+                    previousId: arr.previousId,
+                    isTemp: arr.isTemp,
+                    month: arr.month,
+                    type: arr.type,
+                    onTime: arr.onTime,
+                    offTime: arr.offTime,
+                    userId: user[0].userId,
+                    allId: arr._id
+                });
+            })
+        })
+
+        // console.log(allArrs.users);
+        console.log(allArr);
+        modelArr.create(allArr, function(err, doc2) {
+            if (err) {
+                return res.json({code: 1, msg: '后端出错了'});
+            }
+            return res.json({code: 0, list: doc});
+        })
+    })
+    // AllArrange.insertDocs(allArrange).then(result => {
+    //     if (result.code !== 0)
+    //         return res.json(result.msg);
+    //     return res.json({ code: 0 });
+    // }).catch(err => {
+    //     console.error(err);
+    //     return res.send(err);
+    // })
+})
+
+// 部门主管和经理删除整体班次安排
+Router.post('/delete', function (req, res) {
+    const { _id } = req.body;
+    const condition = { _id };
+    AllArrange.deleteDocs(condition).then(result => {
+        if (result.code !== 0)
+            return result;
+        
+        Arrange.deleteDocs({ allId: _id }).then(result2 => {
+            console.log(result2)
+            if (result2.code !== 0)
+                return result2;
+             return res.json(result);
+        }).then(err => {
+            console.log(err);
+            return res.send(err);
+        })
+       
+    }).catch(err => {
+        return res.send(err);
     })
 })
 
@@ -33,16 +108,20 @@ Router.post('/list', function (req, res) {
 Router.post('/update', function (req, res) {
     const body = req.body;
     const { _id, allArrange } = body;
-    const { departName, previousId, isTemp, month, type, arrange } = allArrange;
-    const { onTime, offTime, users } = arrange;
+    const { departName, previousId, isTemp, month, type, onTime, offTime, users } = allArrange;
 
     const setObject = {
-        previousId,
-        isTemp,
-        month,
-        type,
-        arrange
+        departName: departName || '',
+        previousId: previousId || '',
+        isTemp: isTemp || '',
+        month: month || '',
+        type: type || '',
+        onTime: onTime || '',
+        offTime: offTime || '',
+        users: users || [],
     };
+
+    // console.log(setObject);
 
     AllArrange.updateDoc({ _id }, setObject).then(result => {
         if (result.code === 0) {
@@ -52,17 +131,20 @@ Router.post('/update', function (req, res) {
                     departName,
                     userId: user.userId,
                     location: '北京科技大学-机电信息楼',
+                    month,
                     onTime,
                     offTime,
                     type,
-                    isTemp
+                    isTemp,
+                    allId: _id
                 }
             });
 
-            Arrange.insertDocs(updateList).then(result => {
-                return res.json(result);
-            }).catch(err => {
-                return res.send(err);
+            modelArr.create(updateList, function (err, doc) {
+                if (err) {
+                    return res.json({ code: 1, msg: '后端出错了' });
+                }
+                return res.json({ code: 0, list: result.list });
             })
         } else {
             return res.json({ code: 1, msg: '安排调整失败' });
@@ -88,7 +170,7 @@ Router.get('/export/:id', function (req, res) {
 
     AllArrange.queryDocs(condition, _filter).then(result => {
 
-        
+
         if (result.code === 2)
             return res.json({ code: 1, msg: '当前没有整体班次安排' });
         if (result.code === 1)
@@ -133,7 +215,7 @@ Router.post('/import/:id', upload.single('allArrangeList'), function (req, res) 
 
     // console.log(req.file);
 
-    
+
     const excelResult = excelUtils.excelImports(file.path, _headers);
     if (excelResult.code !== 0)
         return res.json(excelResult);

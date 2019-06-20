@@ -27,8 +27,9 @@ Router.post('/list', function (req, res) {
 
 // 员工打卡
 // Router.get('/swipe', function (req, res) {
-Router.get('/swipe', function (req, res) {
-    const { userId, time } = req.query;
+Router.post('/swipe', function (req, res) {
+    console.log(req);
+    const { userId, time } = req.body;
     // console.log(userId, time);
     // const { userId, time } = req.query;
     // 上班打卡时间：上班时间前1小时到下班时间
@@ -60,6 +61,8 @@ Router.get('/swipe', function (req, res) {
             }
         ]
     }
+
+    console.log(condition);
 
     Arrange.queryDocs(condition).then(queryResult => {
         if (queryResult.code === 1)

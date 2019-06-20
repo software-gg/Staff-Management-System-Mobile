@@ -11,14 +11,20 @@ const subPath = ['wait', 'pass', 'fail', 'all', 'list'];
 // list 主管端和经理端的数据获取
 for (let item of subPath) {
     Router.post(`/${item}`, function (req, res) {
+        console.log(req.body)
         const body = req.body;
         const { userId } = body;
-        let condition;      // 查询条件
+        let condition = {};      // 查询条件
+
         if (item === 'all') {
             condition = { userId };
         } else if (item === 'list') {
+            console.log(body.month)
+            if (body.month)
+                condition.month = body.month;
             if (body.departName)    // 主管获取申请列表数据
                 condition = {
+                    ...condition,
                     departName: body.departName,
                     type: body.type
                 };
@@ -39,13 +45,24 @@ for (let item of subPath) {
     })
 }
 
+// // 插入多个申请
+// Router.post('/insert', function (req, res) {
+//     const {applies} = req.body;
+//     Apply.insertDocs(applies).then(result => {
+//         return res.json(result);
+//     }).catch(err => {
+//         console.log(err);
+//         return res.send(err);
+//     })
+// })
+
 // 编辑申请
 Router.post('/submit', function (req, res) {
     const apply = req.body;     // apply中包含userId
 
     Apply.insertDocs([{ ...apply }]).then(result => {
         // if (result.code !== 0)
-            // return res.json(result);
+        // return res.json(result);
 
         // 员工端提交申请成功后，系统向部门主管发送申请审批消息
         // console.log(apply);

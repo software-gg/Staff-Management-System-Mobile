@@ -8,7 +8,7 @@ const userConfig = require('../config/excel').config['user'];
 const dateToName = require('../utils/date').dateToName;
 const multer = require('multer');
 const userDao = require('../dao/dao').selectModel('user');
-const _filter = { _id: 0, _v: 0 };
+const _filter = {  _v: 0 };
 
 // 数据库中的pwd和_v不显示在doc
 // const _filter = { pwd: 0, _v: 0 };
@@ -42,6 +42,19 @@ Router.get('/list', function (req, res) {
 
     userDao.queryDocs(condition, _filter).then(result => {
         return res.json(result);
+    }).catch(err => {
+        console.error(err);
+        return res.send(err);
+    })
+})
+
+Router.post('/getuser', function (req, res) {
+    const { _id } = req.body;
+
+    userDao.queryDocs({ _id }, _filter).then(result => {
+        if (result.code !== 0)
+            return res.json(result);
+        return res.json({ code: 0, list: result.list[0] })
     }).catch(err => {
         console.error(err);
         return res.send(err);
@@ -145,8 +158,8 @@ Router.post('/delete', function (req, res) {
     const body = req.body;
     let condition = {};
 
-    if (body.userId)
-        condition.userId = body.userId;
+    if (body._id)
+        condition._id = body._id;
 
     userDao.deleteDocs(condition).then(result => {
         if (result.code !== 0)

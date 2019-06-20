@@ -19,7 +19,9 @@ function remindOnOff() {
         offTime: { $gte: new Date(currentTime.getTime() - oneHour - 30 * 1000), $lt: new Date(currentTime.getTime() - oneHour + 30 * 1000) }
     };
 
+    // console.log(conditionOn.onTime)
     Arrange.queryDocs(conditionOn).then(arrangeRes => {
+        // console.log(arrangeRes);
         // console.log(arrangeRes, new Date(currentTime.getTime() - oneHour - 30));
         if (arrangeRes.code !== 0)
             return;
@@ -160,14 +162,16 @@ function addNextAdjust(month) {
 
 // 上下班提醒
 function scheduleCronstyle() {
+    // 每分钟第0秒会执行一次上下班提醒函数
     schedule.scheduleJob('0 * * * * *', function () {
         remindOnOff();
     })
+    // 每月一日会执行一次调整工作安排函数
     schedule.scheduleJob('* * * 1 * *', function () {
         const nowDate = new Date();
         const nowYear = nowDate.getFullYear();
         const nowMonth = nowDate.getMonth();
-        const yearMonth = `${nowYear}-${nowMonth}`;
+        const yearMonth = `${nowYear}-${nowMonth}-1`;
         addNextAdjust(yearMonth);
     })
 }
