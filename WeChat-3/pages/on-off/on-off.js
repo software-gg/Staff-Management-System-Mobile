@@ -5,8 +5,8 @@
 // wx.cloud.init()
 // const db = wx.cloud.database()
 // // 初始化腾讯云地理定位服务
-// var QQMapWX = require('../../libs/qqmap-wx-jssdk.js');
-// var qqmapsdk;
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.js');
+var qqmapsdk;
 
 // Page({
 //   data: {
@@ -425,44 +425,153 @@ Page({
       'thisIndex': 0,
       'thisDay': '1980/01/01',
     },
-    arrangeList: [/*{
-        name: '正常上班',
-        value1: null,
-        value2: null,
-      },
-      {
-        name: '部门加班',
-        value1: null,
-        value2: null,
-      },
-      {
-        name: '临时加班',
-        value1: null,
-        value2: null,
-      },
-      {
-        name: '请假',
-        value1: null,
-        value2: null,
-      }*/
+    arrangeList: [
+      /*{
+              name: '正常上班',
+              value1: null,
+              value2: null,
+            },
+            {
+              name: '部门加班',
+              value1: null,
+              value2: null,
+            },
+            {
+              name: '临时加班',
+              value1: null,
+              value2: null,
+            },
+            {
+              name: '请假',
+              value1: null,
+              value2: null,
+            }*/
     ],
-    statusList: [/*{
-        name: '上班打卡',
-        value: 'null'
-      },
-      {
-        name: '下班打卡',
-        value: 'null',
-      },
-      {
-        name: '加班开始',
-        value: 'null',
-      },
-      {
-        name: '加班结束',
-        value: 'null',
-      },*/
+    statusList: [
+      /*{
+              name: '上班打卡',
+              value: 'null'
+            },
+            {
+              name: '下班打卡',
+              value: 'null',
+            },
+            {
+              name: '加班开始',
+              value: 'null',
+            },
+            {
+              name: '加班结束',
+              value: 'null',
+            },*/
     ]
+  },
+
+  // 计算公司与当前位置间的距离
+  calDistance: function() {
+    var self = this;
+    wx.request({
+      url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+      data: {
+        "key": "PISBZ-7SOW4-4V5UX-XKPJW-JDKK3-ZQBR6",
+        "address": app.globalData.address
+      },
+      method: 'GET',
+      success: function(res) {
+        if (res.data.result) {
+          const addressLocation = res.data.result.location;
+          const courseLat = addressLocation.lat;
+          const courseLng = addressLocation.lng;
+          let destinationDistance;
+          qqmapsdk.calculateDistance({
+            to: [{
+              latitude: courseLat,
+              longitude: courseLng
+            }],
+            success: function(res) {
+              console.log(res.result.elements)
+              destinationDistance = res.result.elements['0'].distance;
+              self.setData({
+                distance: destinationDistance
+              });
+              console.log(destinationDistance);
+            },
+            fail: function(res) {
+              console.log(res);
+            }
+          });
+        }
+      }
+    });
+  },
+
+  attend: function() {
+    wx.showLoading({
+      title: '等待中...',
+    });
+
+    var self = this;
+    // 获取地理位置
+    wx.getLocation({
+      type: 'gcj02',
+      success: function(res) {
+        var longitude = res.longitude;
+        var latitude = res.latitude;
+        var accuracy = res.accuracy;
+        // var time = util.formatTime(new Date());
+        var time = new Date();
+        console.log(res.longitude, res.latitude);
+        console.log(time);
+        self.setData({
+          start: time,
+          longitude: longitude,
+          latitude: latitude
+        });
+
+        // 计算距离
+        self.calDistance();
+        if (self.data.distance > app.globalData.maxDistance) {
+          wx.showToast({
+            title: '您当前不在打卡区域',
+            icon: 'none',
+            duration: 2000
+          })
+          return false;
+        } else {
+          // 检测数据并插入数据库
+          return true;
+        }
+      },
+      fail: function(err) {
+        wx.hideLoading();
+        wx.showModal({
+          title: '签到失败',
+          content: '点击"获取位置"开启位置权限',
+        });
+        return false;
+      }
+    })
+  },
+
+  tap1: function() {
+    // 询问用户是否授权地理定位
+    wx.getSetting({
+      success(res) {
+        console.log(res.authSetting['scope.userLocation'])
+        if (!res.authSetting['scope.userLocation']) {
+          wx.openSetting({
+            success(res) {
+              res.authSetting = {
+                "scope.userLocation": true
+              }
+            },
+            fail(err) {
+              console.error(err);
+            }
+          })
+        }
+      }
+    })
   },
 
   //获取日历相关参数
@@ -505,7 +614,7 @@ Page({
     }
     var res = wx.getSystemInfoSync();
     this.setData({
-      sysW: res.windowHeight / 18,  
+      sysW: res.windowHeight / 18,
       height: (res.windowHeight / 25) - 5,
       marLet: this.data.firstDay,
       arr: this.data.arr,
@@ -520,6 +629,35 @@ Page({
           sliderLeft: (res.windowWidth / that.data.tabs.length - sliderWidth) / 2,
           sliderOffset: res.windowWidth / that.data.tabs.length * that.data.activeIndex
         });
+      }
+    });
+
+
+    // 实例化API核心类
+    qqmapsdk = new QQMapWX({
+      key: 'PISBZ-7SOW4-4V5UX-XKPJW-JDKK3-ZQBR6'
+    });
+
+    // 获取地理位置
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userLocation']) {
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success(res) {
+              console.log(res);
+            },
+            fail(err) {
+              console.error(err);
+            }
+          })
+        } else {
+          wx.showToast({
+            title: '地理位置获取成功',
+            icon: 'none',
+            duration: 1000
+          })
+        }
       }
     });
   },
@@ -552,6 +690,10 @@ Page({
         console.log(res)
       },
       complete(res) {
+
+        if (!self.attend())
+          return ;
+
         wx.request({
           url: app.globalData.proxy + '/attend/swipe',
           method: 'POST',
@@ -572,7 +714,7 @@ Page({
                   icon: 'success'
                 })
               }
-                
+
             }
           }
         })
@@ -717,26 +859,46 @@ Page({
         } else {
           var list = res.data.list.map(v => {
             var type, state;
-            switch(v.type) {
-              case 'leave': type = '请假';  break;
-              case 'extra': type = '部门加班';  break;
-              case 'ordinary':  type = '正常上班';  break;
-              case 'temp':  type = '临时加班';      break;
-              default:      type = '上班';          break;
+            switch (v.type) {
+              case 'leave':
+                type = '请假';
+                break;
+              case 'extra':
+                type = '部门加班';
+                break;
+              case 'ordinary':
+                type = '正常上班';
+                break;
+              case 'temp':
+                type = '临时加班';
+                break;
+              default:
+                type = '上班';
+                break;
             }
-            switch(v.state) {
-              case 'on': state = '上班打卡';  break;
-              case 'off': state = '下班打卡'; break;
-              case 'late':  state = '迟到';   break;
-              case 'early': state = '早退';   break;
-              case 'extra': state = '可申请加班'; break;
+            switch (v.state) {
+              case 'on':
+                state = '上班打卡';
+                break;
+              case 'off':
+                state = '下班打卡';
+                break;
+              case 'late':
+                state = '迟到';
+                break;
+              case 'early':
+                state = '早退';
+                break;
+              case 'extra':
+                state = '可申请加班';
+                break;
             }
             return {
               arrangeList: {
                 onTime: new Date(v.onTime).toLocaleTimeString(),
                 offTime: new Date(v.offTime).toLocaleTimeString(),
                 type: type
-              }, 
+              },
               statusList: {
                 realOnTime: new Date(v.realOnTime).toLocaleTimeString(),
                 realOffTime: new Date(v.realOffTime).toLocaleTimeString(),

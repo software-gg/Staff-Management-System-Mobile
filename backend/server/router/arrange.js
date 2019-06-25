@@ -11,6 +11,7 @@ const excelUtils = require('../utils/excel');
 const _filter = { _v: 0 };
 const model = require('../model').getModel('arrange')
 
+
 // 员工按天查询工作安排
 Router.post('/list/user', function (req, res) {
     // 测试：userId = undefined时的情况？
@@ -62,10 +63,10 @@ Router.post('/update', function (req, res) {
         state: state || ''
     }
 
-    console.log(settings);
+    // console.log(settings);
 
     Arrange.updateDoc(condition, settings).then(result => {
-        console.log('result: ', result);
+        // console.log('result: ', result);
         return res.json(result);
     }).catch(err => {
         return res.send(err);
@@ -104,7 +105,8 @@ Router.post('/delete', function (req, res) {
 
 // 部门主管和经理导出细致工作安排
 Router.get('/export/:id', function (req, res) {
-    const body = req.query;
+    // console.log(req.query)
+    const query = req.query;
     let condition = {};
     // console.log('arrangeConfig: ', arrangeConfig);
     let headers = arrangeConfig.headers;
@@ -112,11 +114,12 @@ Router.get('/export/:id', function (req, res) {
 
     // console.log('headers: ', headers);
 
-    // 根据body中的key是否存在来确定查询条件
-    if (body.department)
-        condition.department = body.department;
+    // 根据query中的key是否存在来确定查询条件
+    if (query.department)
+        condition.department = query.department;
     else
         /* 空语句 */;
+    condition.month = query.month;
 
     Arrange.queryDocs(condition, _filter).then(result => {
 
@@ -131,7 +134,7 @@ Router.get('/export/:id', function (req, res) {
         var date = dateToName(new Date());
         var path = `public/doc/arrange/${date}.xlsx`;
 
-        console.log('arrange result: ', result);
+        // console.log('arrange result: ', result);
         excelUtils.excelExports(sheetName, headers, data, path);
         res.download(path)
 
@@ -158,6 +161,9 @@ const upload = multer({ storage });
 
 // 部门主管和经理导入细致工作安排
 Router.post('/import/:id', upload.single('arrangeList'), function (req, res) {
+    // console.log(req.body);
+    if (!req.file)
+        return res.send("请选择一个文件")
     const file = req.file;
     let _headers = arrangeConfig.headers.map(v => {
         return v.name;
@@ -167,7 +173,7 @@ Router.post('/import/:id', upload.single('arrangeList'), function (req, res) {
     // console.log(req.file);
 
 
-    var upload = multer({ storage });
+    // var upload = multer({ storage });
 
     /*
     *    有小问题：当删除和插入多个user成功之后，返回{}，而不是返回{code: 0}
@@ -175,17 +181,27 @@ Router.post('/import/:id', upload.single('arrangeList'), function (req, res) {
     // 导入员工之前需要删除所有数据库中的员工
     const excelResult = excelUtils.excelImports(file.path, _headers);
     if (excelResult.code !== 0)
-        return res.json(excelResult);
+        return res.send(excelResult.msg);
 
-    const data = excelResult.data;
+    var data = excelResult.data || [];
+    let condition = {};
+    if (req.body.departName)
+        condition.departName = req.body.departName;
+    condition.month = req.body.month;
 
-    Arrange.deleteDocs({}).then(result => {
+    data = data.map(v => {
+        return {
+            ...v,
+            month: req.body.month
+        }
+    })
+    Arrange.deleteDocs(condition).then(result => {
         if (result.code === 1)
             return res.json({ code: 1, msg: '导入失败' });
 
         Arrange.insertDocs(data).then(result2 => {
-            console.log('result2:', result2);
-            return res.json(result2);
+            // console.log('result2:', result2);
+            return res.send('导入成功！');
         }).catch(err => {
             console.log(err);
             return res.json({ code: 1, msg: err });

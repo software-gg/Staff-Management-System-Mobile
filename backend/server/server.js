@@ -78,10 +78,10 @@ app.all('*', function(req, res, next) {
 app.use(bodyParser.json());
 app.use(cookieParser());
 // 请求静态资源
-app.use('/static', express.static('public'));
+app.use('/public', express.static('public'));
 
 app.get('/', function (req, res) {
-    console.log(req.protocol)
+    // console.log(req.protocol)
     if (req.protocol === 'https') {
         res.status(200).send('Welcome to Safety Land!')
     } else {

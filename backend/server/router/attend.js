@@ -28,7 +28,7 @@ Router.post('/list', function (req, res) {
 // 员工打卡
 // Router.get('/swipe', function (req, res) {
 Router.post('/swipe', function (req, res) {
-    console.log(req);
+    // console.log(req);
     const { userId, time } = req.body;
     // console.log(userId, time);
     // const { userId, time } = req.query;
@@ -62,7 +62,7 @@ Router.post('/swipe', function (req, res) {
         ]
     }
 
-    console.log(condition);
+    // console.log(condition);
 
     Arrange.queryDocs(condition).then(queryResult => {
         if (queryResult.code === 1)

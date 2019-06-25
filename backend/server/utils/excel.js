@@ -48,7 +48,7 @@ function excelExports(sheetName, _headers, _data, path) {
         //     { v: '???', position: 'E4' } ] ]
         .map((v, i) => _headers.map((k, j) => {
             let newV = v[k.name];
-            console.log('k.type: ', k.type === 'Date');
+            // console.log('k.type: ', k.type === 'Date');
             if (v[k.name] == null)
                 newV = '';
             else if (k.type === 'Date')
@@ -100,7 +100,7 @@ function excelExports(sheetName, _headers, _data, path) {
 
     // console.log('_data: ', _data);
     // console.log('headers: ', headers);
-    console.log('data: ', data);
+    // console.log('data: ', data);
     // 构建 workbook 对象
     var wb = {
         SheetNames: [sheetName],

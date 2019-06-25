@@ -9,6 +9,7 @@ const dateToName = require('../utils/date').dateToName;
 const multer = require('multer');
 const userDao = require('../dao/dao').selectModel('user');
 const _filter = {  _v: 0 };
+// const deleteAllUserData = require('./deleteall').deleteAllUserData;
 
 // 数据库中的pwd和_v不显示在doc
 // const _filter = { pwd: 0, _v: 0 };
@@ -75,7 +76,7 @@ Router.post('/login', function (req, res) {
         condition.phone = req.body.phone;
     }
 
-    console.log(req.body)
+    // console.log(req.body)
 
     userDao.queryDocs(condition, _filter).then(result => {
         // console.log('query Result: ', result);
@@ -148,24 +149,28 @@ Router.post('/insert', function (req, res) {
 })
 
 // 删除所有与该员工相关的数据
-function deleteAllData(userId = '') {
+// function deleteAllData(userId = '') {
 
-    return true;
-}
+//     return true;
+// }
 
-// 部门主管和经理删除一个员工
+// 经理删除一个员工
 Router.post('/delete', function (req, res) {
     const body = req.body;
     let condition = {};
+    let delCond = {}
 
-    if (body._id)
+    if (body._id) {
         condition._id = body._id;
+        delCond.userId = body.userId;
+    }
+        
 
     userDao.deleteDocs(condition).then(result => {
         if (result.code !== 0)
             return res.json(result);
 
-        if (deleteAllData(condition))
+        // if (deleteAllUserData(delCond))
             return res.json({ code: 0 });
     }).catch(err => {
         console.log(err);
@@ -174,8 +179,8 @@ Router.post('/delete', function (req, res) {
 })
 
 // 导出员工
-Router.post('/export/:id', function (req, res, next) {
-    const body = req.body;
+Router.get('/export/:id', function (req, res, next) {
+    const body = req.query;
     let condition = {};
     let headers = userConfig.headers;
     let sheetName = userConfig.sheetName;
@@ -200,14 +205,18 @@ Router.post('/export/:id', function (req, res, next) {
         var date = dateToName(new Date());
         var path = `public/doc/user/${date}.xlsx`;
 
-        console.log(headers);
-        console.log(data);
+        // console.log(headers);
+        // console.log(data);
 
         excelUtils.excelExports(sheetName, headers, data, path);
-        res.download(path)
+        res.download(path, (err) => {
+            console.log(err);
+        })
+
+        // return res.json({ code: 0, path: path })
 
         // 导出 Excel
-        // xlsx.writeFile(wb, 'output.xlsx');
+        // xlsx.writeFile(wb, `${date}.xlsx`);
         // res.setHeader('Content-Type', 'application/vnd.openxmlformats;charset=utf-8');
         // res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
         // res.send(wb);
@@ -232,12 +241,12 @@ const upload = multer({ storage });
 // 导入员工
 // upload.single()的参数即为前端对应的name属性的值
 Router.post('/import/:id', upload.single('userList'), function (req, res) {
+    if (!req.file)
+        return res.send('请选择一个文件')
     const file = req.file;
     let _headers = userConfig.headers.map(v => {
         return v.name;
     });
-
-    // console.log(req.file);
 
 
     // var upload = multer({ storage });
@@ -248,9 +257,13 @@ Router.post('/import/:id', upload.single('userList'), function (req, res) {
     // 导入员工之前需要删除所有数据库中的员工
     const excelResult = excelUtils.excelImports(file.path, _headers);
     if (excelResult.code !== 0)
-        return res.json(excelResult);
+        return res.send(excelResult.msg);
 
     const data = excelResult.data;
+
+    let condition = {}
+    if (req.body.departName)
+        condition.departName = req.body.departName;
 
     userDao.deleteDocs(condition).then(result => {
         if (result.code !== 0)
@@ -260,8 +273,9 @@ Router.post('/import/:id', upload.single('userList'), function (req, res) {
         // console.log(data[0]);
 
         userDao.insertDocs(data).then(result2 => {
-            console.log('result2:', result2);
-            return res.json(result2);
+            // console.log('result2:', result2);
+            // window.location.href='http://localhost:3000/employee/list'
+            return res.send("导入成功！")
         }).catch(err => {
             console.log(err);
             return res.json({ code: 1, msg: err });

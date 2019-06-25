@@ -11,7 +11,7 @@ const subPath = ['wait', 'pass', 'fail', 'all', 'list'];
 // list 主管端和经理端的数据获取
 for (let item of subPath) {
     Router.post(`/${item}`, function (req, res) {
-        console.log(req.body)
+        // console.log(req.body)
         const body = req.body;
         const { userId } = body;
         let condition = {};      // 查询条件
@@ -19,7 +19,7 @@ for (let item of subPath) {
         if (item === 'all') {
             condition = { userId };
         } else if (item === 'list') {
-            console.log(body.month)
+            // console.log(body.month)
             if (body.month)
                 condition.month = body.month;
             if (body.departName)    // 主管获取申请列表数据
@@ -81,9 +81,9 @@ Router.post('/submit', function (req, res) {
                 msg: '请审批员工申请'
             }]
 
-            console.log(messages);
+            // console.log(messages);
             Message.insertDocs(messages).then(insertRes => {
-                console.log(insertRes);
+                // console.log(insertRes);
                 return res.json(result);
             }).catch(err => {
                 console.log(err)
@@ -101,7 +101,7 @@ Router.post('/submit', function (req, res) {
 // 删除指定申请
 Router.post('/delete', function (req, res) {
     const { _id } = req.body;
-    console.log(_id)
+    // console.log(_id)
 
     Apply.deleteDocs({ _id }).then(result => {
         return res.json(result);

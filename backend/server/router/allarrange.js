@@ -39,7 +39,7 @@ Router.post('/insert', function (req, res) {
     const body = req.body;
     const { allArrange } = req.body;
     model.create(allArrange, function (err, doc) {
-        console.log(doc);
+        // console.log(doc);
         if (err)
             return res.json({ code: 1, msg: '后端出错了' });
 
@@ -49,7 +49,7 @@ Router.post('/insert', function (req, res) {
             const users = arr.users || [];
             users.forEach(user => {
                 allArr.push({
-                    departName: arr.departName,
+                    departName: user[0].departName,
                     previousId: arr.previousId,
                     isTemp: arr.isTemp,
                     month: arr.month,
@@ -63,7 +63,7 @@ Router.post('/insert', function (req, res) {
         })
 
         // console.log(allArrs.users);
-        console.log(allArr);
+        // console.log(allArr);
         modelArr.create(allArr, function(err, doc2) {
             if (err) {
                 return res.json({code: 1, msg: '后端出错了'});
@@ -90,7 +90,7 @@ Router.post('/delete', function (req, res) {
             return result;
         
         Arrange.deleteDocs({ allId: _id }).then(result2 => {
-            console.log(result2)
+            // console.log(result2)
             if (result2.code !== 0)
                 return result2;
              return res.json(result);
@@ -181,7 +181,7 @@ Router.get('/export/:id', function (req, res) {
         var date = dateToName(new Date());
         var path = `public/doc/allarrange/${date}.xlsx`;
 
-        console.log('arrange result: ', result);
+        // console.log('arrange result: ', result);
         excelUtils.excelExports(sheetName, headers, data, path);
         res.download(path)
 
@@ -227,7 +227,7 @@ Router.post('/import/:id', upload.single('allArrangeList'), function (req, res) 
             return res.json({ code: 1, msg: '导入失败' });
 
         AllArrange.insertDocs(data).then(result2 => {
-            console.log('result2:', result2);
+            // console.log('result2:', result2);
             return res.json(result2);
         }).catch(err => {
             console.log(err);

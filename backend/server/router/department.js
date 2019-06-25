@@ -4,6 +4,7 @@ const models = require('../dao/dao');
 const Department = models.selectModel('department');
 const User = models.selectModel('user');
 const Depart = require('../model').getModel('department');
+// const deleteAllDepartData = require('./deleteall').deleteAllDepartData;
 
 // 经理查询部门
 Router.post('/list', function (req, res) {
@@ -12,7 +13,7 @@ Router.post('/list', function (req, res) {
     if (body.departName)
         condition.departName = body.departName;
     Department.queryDocs(condition).then(result => {
-        console.log(result);
+        // console.log(result);
 
         return res.json(result);
 
@@ -87,10 +88,10 @@ Router.post('/insert', function (req, res) {
 })
 
 // 删除所有与该部门相关的数据，需要删除多个文档中的相关数据
-function deleteAllDepart(departName) {
+// function deleteAllDepart(departName) {
 
-    return true;
-}
+//     return true;
+// }
 
 // 经理删除部门
 Router.post('/delete', function (req, res) {
@@ -108,7 +109,7 @@ Router.post('/delete', function (req, res) {
             console.log(err);
             return res.send(err);
         })
-        if (deleteAllDepart(departName))
+        // if (deleteAllDepartData(departName))
             return res.json({ code: 0 });
     })
 })

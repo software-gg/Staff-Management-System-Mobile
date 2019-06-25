@@ -51,7 +51,7 @@ function remindOnOff() {
 
             // console.log(messageList);
             Message.insertDocs(messageList).then(result => {
-                console.log(result);
+                // console.log(result);
             }).catch(err => {
                 console.log(err);
             })
@@ -91,7 +91,7 @@ function remindOnOff() {
 
             // console.log(messageList);
             Message.insertDocs(messageList).then(result => {
-                console.log(result);
+                // console.log(result);
             }).catch(err => {
                 console.log(err);
             })
@@ -200,6 +200,15 @@ Router.post('/send', function (req, res) {
     }]
 
     Message.insertDocs(docs).then(result => {
+        return res.json(result);
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
+Router.post('/delete', function (req, res) {
+    const { _id } = req.body;
+    Message.deleteDocs({ _id }).then(result => {
         return res.json(result);
     }).catch(err => {
         console.log(err);
