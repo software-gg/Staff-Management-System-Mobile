@@ -468,90 +468,91 @@ Page({
   },
 
   // 计算公司与当前位置间的距离
-  calDistance: function() {
-    var self = this;
-    wx.request({
-      url: 'https://apis.map.qq.com/ws/geocoder/v1/',
-      data: {
-        "key": "PISBZ-7SOW4-4V5UX-XKPJW-JDKK3-ZQBR6",
-        "address": app.globalData.address
-      },
-      method: 'GET',
-      success: function(res) {
-        if (res.data.result) {
-          const addressLocation = res.data.result.location;
-          const courseLat = addressLocation.lat;
-          const courseLng = addressLocation.lng;
-          let destinationDistance;
-          qqmapsdk.calculateDistance({
-            to: [{
-              latitude: courseLat,
-              longitude: courseLng
-            }],
-            success: function(res) {
-              console.log(res.result.elements)
-              destinationDistance = res.result.elements['0'].distance;
-              self.setData({
-                distance: destinationDistance
-              });
-              console.log(destinationDistance);
-            },
-            fail: function(res) {
-              console.log(res);
-            }
-          });
-        }
-      }
-    });
-  },
+  // calDistance: function() {
 
-  attend: function() {
-    wx.showLoading({
-      title: '等待中...',
-    });
+  // },
 
-    var self = this;
-    // 获取地理位置
-    wx.getLocation({
-      type: 'gcj02',
-      success: function(res) {
-        var longitude = res.longitude;
-        var latitude = res.latitude;
-        var accuracy = res.accuracy;
-        // var time = util.formatTime(new Date());
-        var time = new Date();
-        console.log(res.longitude, res.latitude);
-        console.log(time);
-        self.setData({
-          start: time,
-          longitude: longitude,
-          latitude: latitude
-        });
+  // attend: function() {
+  //   wx.showLoading({
+  //     title: '等待中...',
+  //   });
 
-        // 计算距离
-        self.calDistance();
-        if (self.data.distance > app.globalData.maxDistance) {
-          wx.showToast({
-            title: '您当前不在打卡区域',
-            icon: 'none',
-            duration: 2000
-          })
-          return false;
-        } else {
-          // 检测数据并插入数据库
-          return true;
-        }
-      },
-      fail: function(err) {
-        wx.hideLoading();
-        wx.showModal({
-          title: '签到失败',
-          content: '点击"获取位置"开启位置权限',
-        });
-        return false;
-      }
-    })
-  },
+  //   var self = this;
+  //   // 获取地理位置
+  //   wx.getLocation({
+  //     type: 'gcj02',
+  //     success: function(res) {
+  //       wx.hideLoading();
+  //       var longitude = res.longitude;
+  //       var latitude = res.latitude;
+  //       var accuracy = res.accuracy;
+  //       // var time = util.formatTime(new Date());
+  //       var time = new Date();
+  //       console.log(res.longitude, res.latitude);
+  //       console.log(time);
+  //       self.setData({
+  //         start: time,
+  //         longitude: longitude,
+  //         latitude: latitude
+  //       });
+
+  //       // 计算距离
+  //       wx.request({
+  //         url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+  //         data: {
+  //           "key": "PISBZ-7SOW4-4V5UX-XKPJW-JDKK3-ZQBR6",
+  //           "address": app.globalData.address
+  //         },
+  //         method: 'GET',
+  //         success: function(res) {
+  //           if (res.data.result) {
+  //             const addressLocation = res.data.result.location;
+  //             const courseLat = addressLocation.lat;
+  //             const courseLng = addressLocation.lng;
+  //             let destinationDistance;
+  //             qqmapsdk.calculateDistance({
+  //               to: [{
+  //                 latitude: courseLat,
+  //                 longitude: courseLng
+  //               }],
+  //               success: function(res) {
+  //                 console.log(res.result.elements)
+  //                 destinationDistance = res.result.elements['0'].distance;
+  //                 self.setData({
+  //                   distance: destinationDistance
+  //                 });
+  //                 console.log(destinationDistance);
+  //                 if (destinationDistance > app.globalData.maxDistance) {
+  //                   wx.showToast({
+  //                     title: '您当前不在打卡区域',
+  //                     icon: 'none',
+  //                     duration: 2000
+  //                   })
+  //                   return false;
+  //                 } else {
+  //                   // 检测数据并插入数据库
+  //                   return true;
+  //                 }
+  //               },
+  //               fail: function(res) {
+  //                 console.log(res);
+  //               }
+  //             });
+  //           }
+  //         }
+  //       });
+
+  //     },
+  //     fail: function(err) {
+  //       wx.hideLoading();
+  //       wx.showModal({
+  //         title: '签到失败',
+  //         content: '点击"获取位置"开启位置权限',
+  //       });
+  //       return false;
+  //     }
+  //   })
+  // },
 
   tap1: function() {
     // 询问用户是否授权地理定位
@@ -691,33 +692,123 @@ Page({
       },
       complete(res) {
 
-        if (!self.attend())
-          return ;
+        wx.showLoading({
+          title: '等待中...',
+        });
 
-        wx.request({
-          url: app.globalData.proxy + '/attend/swipe',
-          method: 'POST',
-          data: {
-            userId: wx.getStorageSync('user').userId,
-            time: utils.formatTime(new Date())
-          },
-          success(res1) {
-            if (res1.statusCode === 200) {
-              if (res1.data.code !== 0)
-                wx.showToast({
-                  title: res1.data.msg || '',
-                  icon: 'none'
-                })
-              else {
-                wx.showToast({
-                  title: decode[res1.data.state],
-                  icon: 'success'
-                })
+        // 获取地理位置
+        wx.getLocation({
+          type: 'gcj02',
+          success: function (res) {
+            wx.showLoading({
+              title: '检测地理位置...',
+            });
+            var longitude = res.longitude;
+            var latitude = res.latitude;
+            var accuracy = res.accuracy;
+            // var time = util.formatTime(new Date());
+            var time = new Date();
+            console.log(res.longitude, res.latitude);
+            console.log(time);
+
+            // 计算距离
+            wx.request({
+              url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+              data: {
+                "key": "PISBZ-7SOW4-4V5UX-XKPJW-JDKK3-ZQBR6",
+                "address": app.globalData.address
+              },
+              method: 'GET',
+              success: function (res) {
+                wx.showLoading({
+                  title: '计算距离中...',
+                });
+                if (res.data.result) {
+                  const addressLocation = res.data.result.location;
+                  const courseLat = addressLocation.lat;
+                  const courseLng = addressLocation.lng;
+                  let destinationDistance;
+                  qqmapsdk.calculateDistance({
+                    to: [{
+                      latitude: courseLat,
+                      longitude: courseLng
+                    }],
+                    success: function (res) {
+                      console.log(res.result.elements)
+                      destinationDistance = res.result.elements['0'].distance;
+                      self.setData({
+                        distance: destinationDistance
+                      });
+                      console.log(destinationDistance, app.globalData.maxDistance);
+                      if (destinationDistance > app.globalData.maxDistance) {
+                        wx.showToast({
+                          title: '您当前不在打卡区域',
+                          icon: 'none',
+                          duration: 2000
+                        })
+                        wx.hideLoading();
+                        return false;
+                      } else {
+                        // 检测数据并插入数据库
+                        wx.showLoading({
+                          title: '正在签到...',
+                        });
+                        console.log("start attending...")
+                        wx.request({
+                          url: app.globalData.proxy + '/attend/swipe',
+                          method: 'POST',
+                          data: {
+                            userId: wx.getStorageSync('user').userId,
+                            time: utils.formatTime(new Date())
+                          },
+                          success(res1) {
+                            wx.hideLoading();
+                            if (res1.statusCode === 200) {
+                              if (res1.data.code !== 0)
+                                wx.showToast({
+                                  title: res1.data.msg || '',
+                                  icon: 'none'
+                                })
+                              else {
+                                wx.showToast({
+                                  title: decode[res1.data.state],
+                                  icon: 'success'
+                                })
+                              }
+                            }
+                          },
+                          fail(err) {
+                            wx.hideLoading();
+                            wx.showToast({
+                              title: '签到失败',
+                              icon: 'none',
+                              duration: 1000
+                            })
+                          }
+                        })
+                      }
+                    },
+                    fail: function (res) {
+                      wx.hideLoading();
+                      console.log(res);
+                    }
+                  });
+                }
               }
+            });
 
-            }
+          },
+          fail: function (err) {
+            wx.hideLoading();
+            wx.showModal({
+              title: '签到失败',
+              content: '点击"获取位置"开启位置权限',
+            });
+            return false;
           }
         })
+
+        
       }
     })
   },

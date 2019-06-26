@@ -21,16 +21,16 @@
       <input bindinput='bindPhoneInput'/>
     </view>
   </view>
-  <view class='row'>
+  <!-- <view class='row'>
      <input placeholder='请输验证码' bindinput='bindCodeInput' style='width:70%;'/> 
      <button class='codeBtn' bindtap='getCode' hidden='{{hidden}}' disabled='{{btnDisabled}}'>{{btnValue}}</button>
-  </view>
-  <checkbox-group bindchange="checkboxChange">
+  </view> -->
+  <!-- <checkbox-group bindchange="checkboxChange">
   <label class="checkbox" wx:for="{{items}}" wx:key="{{index}}">
     <checkbox value="{{item.name}}" checked="{{item.checked}}" />
     {{item.value}}
   </label>
-  </checkbox-group>
+  </checkbox-group> -->
   <view class='item'>
     <view class='login-bin'>
       <button open-type='getUserInfo'  type='primary' bindgetuserinfo='loginBtnClick'>登录</button>

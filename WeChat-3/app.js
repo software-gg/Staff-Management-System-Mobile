@@ -43,17 +43,17 @@ App({
     })
   },
   globalData: {
-    proxy: 'http://192.168.1.104:9093',
+    proxy: 'http://10.16.169.32:9093',
     workid: '',
     user: '',
     // _openid: null,
     startTime: null,
     endTime: null,
-    maxDistance: null,
+    maxDistance: 10000,
     address: null,
     activeApply:0,
     activeWork:0,
-    maxDistance: null,
+    address: '北京科技大学-机电信息楼'
     // address: null,
     // name: null,
     // gender: null,
