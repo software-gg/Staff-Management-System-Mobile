@@ -10,7 +10,8 @@
     "pages/edit-person/edit",
     "pages/edit-passwd/passwd",
     "pages/save-example/save",
-    "pages/applicant/applicant"
+    "pages/applicant/applicant",
+    "pages/face/face"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -53,6 +54,12 @@
       {
         "pagePath": "pages/settings/settings",
         "text": "设置",
+        "iconPath": "image/我的.png",
+        "selectedIconPath": "image/我的.png"
+      },
+      {
+        "pagePath": "pages/face/face",
+        "text": "人脸考勤",
         "iconPath": "image/我的.png",
         "selectedIconPath": "image/我的.png"
       }

@@ -1,0 +1,28 @@
+<view class="page-body">
+  <view class="page-body-wrapper">
+    <camera device-position="front" flash="off" binderror="error" style="width:100%;height:{{windowWidth}}px;"></camera>
+    <canvas wx:if="{{canvasshow}}" style="width: 100%;height:{{windowWidth}}px;position:absolute;" canvas-id="canvas"></canvas>
+    <view class="btn-area">
+      <button type="primary" bindtap="track" style='background-color:#31859c;' data-trackshow="{{trackshow}}">{{trackshow}}</button>
+    </view>
+    <view class="btn-area">
+      <button type="primary" bindtap="search" style='background-color:#31859c;'>进行人脸识别</button>
+    </view>
+    <!-- <view class="btn-area">
+      <button type="primary" bindtap="startRecord" style='background-color:#31859c;'>开始录像</button>
+    </view>
+    <view class="btn-area">
+      <button type="primary" bindtap="stopRecord" style='background-color:#31859c;'>结束录像</button>
+    </view> -->
+    <view  wx:if="{{src}}" class="preview-tips">识别结果:{{who}}</view>
+    <view wx:if="{{src}}" style='display:flex;width:100%;justify-content:center;'>
+      <image  mode="aspectFit" src="{{src}}"  style='width:50%;height:{{windowWidth/2}}px;'></image>
+      <canvas  style="width: 50%;height:{{windowWidth/2}}px;position:absolute;" canvas-id="canvasresult"></canvas>
+    </view>
+    <!-- <view wx:if="{{videoSrc}}" class="preview-tips">视频预览</view>
+    <video wx:if="{{videoSrc}}" poster="{{fengmian}}" class="video" src="{{videoSrc}}"></video>
+    <view wx:if="{{videoSrc}}" class="btn-area">
+      <button type="primary" bindtap="uploadRecord" style='background-color:#31859c;'>上传该录像</button>
+    </view> -->
+  </view>
+</view>

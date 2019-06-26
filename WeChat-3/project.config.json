@@ -49,7 +49,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 8,
 			"list": [
 				{
 					"id": -1,
@@ -104,6 +104,13 @@
 					"id": -1,
 					"name": "message",
 					"pathName": "pages/message/message",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "face",
+					"pathName": "pages/face/face",
 					"scene": null
 				}
 			]
